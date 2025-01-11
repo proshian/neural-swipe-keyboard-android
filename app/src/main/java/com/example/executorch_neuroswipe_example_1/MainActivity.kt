@@ -83,16 +83,6 @@ class MainActivity : ComponentActivity() {
 
 
 
-//        val swipeSeqLength: Int = 70
-//        val batchSize: Int = 1
-//        val numCoordFeats: Int = 6
-
-
-//        val exampleCoordFeats = Tensor.fromBlob(
-//            FloatArray(swipeSeqLength * batchSize * numCoordFeats) { 1.0f },  // data
-//            longArrayOf(swipeSeqLength.toLong(), batchSize.toLong(), numCoordFeats.toLong()),  // shape
-//        )
-
         val x = intArrayOf(872,858,840,798,743,713,653,624,609,599,591,587,584,585,600,644,683,720,753,786,807,827,845,860,864,867,869,869,861,824,758,740,702,665,632,611,600,593,588,587,590,596,603,609,606,600,554,482,408,347,291,242,206,173,146,126,111,104,98,92,86,80,65,57,54,50,50,48,48,48)
         val y = intArrayOf(250,250,250,245,241,241,241,242,242,242,244,244,245,254,268,284,295,302,313,323,335,350,370,389,398,403,409,412,410,386,334,319,293,274,254,242,238,235,232,233,241,248,253,257,262,263,266,260,253,253,253,257,257,257,256,251,245,241,233,224,206,179,128,91,80,58,49,28,5,5)
         val t = intArrayOf(0,94,103,118,135,152,176,191,207,224,240,256,275,289,306,322,341,356,374,390,405,422,439,458,475,488,505,521,538,555,576,587,603,621,637,653,671,685,702,720,736,753,771,785,804,818,835,850,870,883,899,917,934,950,969,983,1000,1017,1034,1051,1068,1084,1102,1119,1133,1151,1167,1181,1201,1211)
@@ -101,31 +91,10 @@ class MainActivity : ComponentActivity() {
         val exampleCoordFeats = trajFeatsGetter.getFeats(x, y, t, gridName = "default")
 
 
-//        Log.i("MyTag", "exampleCoordFeats: $exampleCoordFeats")
-//        Log.i("MyTag", "exampleCoordFeats: ${exampleCoordFeats.dataAsFloatArray.joinToString(" ")}")
-
-
-
-//        val exampleNearestKeys = Tensor.fromBlob(
-//            IntArray(swipeSeqLength * batchSize) { 1 },  // data
-//            longArrayOf(swipeSeqLength.toLong(), batchSize.toLong())  // shape
-//        )
-
-
-//        val exampleNearestKeys = Tensor.fromBlob(
-//            intArrayOf(4,  4,  4,  4, 12, 12, 15, 15, 15, 15, 15, 17, 17, 17, 15, 15, 15, 12,
-//                12,  1,  1,  1,  1,  1,  1, 31, 31, 31,  1,  1, 29, 12, 12, 15, 15, 15,
-//                15, 15, 17, 17, 15, 15, 15, 15, 15, 15, 17, 16, 16,  0,  2,  2,  2, 28,
-//                28, 28, 28, 28, 28, 21, 21, 21, 10, 10, 10, 10, 10, 10, 10, 10),
-//            longArrayOf(swipeSeqLength.toLong(), batchSize.toLong())
-//        )
-
         val exampleNearestKeys = Tensor.fromBlob(
             getNearestKeys(x, y, nearestKeyLookup),
             longArrayOf(x.size.toLong(), 1)
         )
-
-
 
 
         Log.i("MyTag", "exampleNearestKeys: $exampleNearestKeys")
@@ -142,22 +111,6 @@ class MainActivity : ComponentActivity() {
         Log.i("MyTag", "${encodedEValue.toTensor()}")
 
 
-//        val decoderInSeqLen: Int = 5
-//
-//        val exampleDecoderInputTensor = Tensor.fromBlob(
-//            IntArray(decoderInSeqLen * batchSize) { 1 },  // data
-//            longArrayOf(decoderInSeqLen.toLong(), batchSize.toLong())  // shape
-//        )
-//
-//        val decodedEValue = mModule!!.execute(
-//            "decode",
-//            EValue.from(exampleDecoderInputTensor), encodedEValue)[0]
-//
-//        val decodedTensor = decodedEValue.toTensor()
-//
-//        Log.i("MyTag", "mModule decoded the next char!")
-//        Log.i("MyTag", "$decodedTensor")
-
         val greedySearchResult = greedySearch(
             encodedEValue, mModule!!, sosToken = 36, eosToken = 33, maxSteps = 35)
 
@@ -167,15 +120,6 @@ class MainActivity : ComponentActivity() {
         Log.i("MyTag", "decodedTokens: ${decodedTokens.joinToString (" " ) }")
         Log.i("MyTag", "negLogProb: $negLogProb")
 
-//        Log.i("MyTag", "listing the decoder out values:")
-//        for (value in decodedTensor.dataAsFloatArray) {
-//            println(value)
-//        }
-//
-//        Log.i("MyTag", "listing the encoder out values:")
-//        for (value in encodedEValue.toTensor().dataAsFloatArray) {
-//            println(value)
-//        }
 
         // expected prediction 36,  5, 15,  2, 17, 28, 10, 33
 
@@ -189,10 +133,6 @@ class MainActivity : ComponentActivity() {
         }
 
         Log.i("MyTag", "time: $time")
-
-
-
-
 
 
 
