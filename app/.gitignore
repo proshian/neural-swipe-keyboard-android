@@ -1,0 +1,3 @@
+/build
+/src/main/assets/*.pte
+/src/main/jniLibs/arm64-v8a/libexecutorch.so
