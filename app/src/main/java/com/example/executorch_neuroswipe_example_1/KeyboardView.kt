@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.view.View
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.KeyboardGrid
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.KeyboardKey
+import kotlin.math.round
 
 class KeyboardView(context: Context) : View(context) {
     private var keyboardGrid: KeyboardGrid? = null
@@ -19,6 +20,31 @@ class KeyboardView(context: Context) : View(context) {
         paint.textSize = 50f
         paint.style = Paint.Style.FILL
         paint.textAlign = Paint.Align.CENTER
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        if (keyboardGrid == null) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+            return
+        }
+
+        // Calculate available space
+        val maxWidth = MeasureSpec.getSize(widthMeasureSpec)
+        val maxHeight = MeasureSpec.getSize(heightMeasureSpec)
+
+        // Calculate scale based on available space
+        val widthScale = maxWidth.toFloat() / keyboardGrid!!.width.toFloat()
+        val heightScale = maxHeight.toFloat() / keyboardGrid!!.height.toFloat()
+        scale = minOf(widthScale, heightScale)
+
+        // Set final dimensions
+        val desiredWidth = (keyboardGrid!!.width * scale).toInt()
+        val desiredHeight = (keyboardGrid!!.height * scale).toInt()
+
+        setMeasuredDimension(
+            resolveSize(desiredWidth, widthMeasureSpec),
+            resolveSize(desiredHeight, heightMeasureSpec)
+        )
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
