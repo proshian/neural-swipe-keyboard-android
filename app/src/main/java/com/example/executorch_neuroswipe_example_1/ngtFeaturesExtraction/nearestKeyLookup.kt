@@ -19,12 +19,20 @@ fun getNearestKeyTokenWithoutMap(i: Int, j: Int, keys:  List<KeyboardKey>): Int 
 }
 
 fun getNKL(): Array<IntArray>{
+    val nearestKeyLabelCandidates = arrayOf(
+        "а", "б", "в", "г", "д", "е", "ë", "ж", "з", "и", "й",
+        "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
+        "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"
+    )
     val grid = getDefaultGrid()
+    val keyboardWidth = grid.width
+    val keyboardHeight = grid.height
+    val allowedKeys = grid.keys.filter {it.label in nearestKeyLabelCandidates}
     val tokenizer = KeyboardKeyTokenizer()
-    val labeledKeyboardArr = Array(size = grid.width) { IntArray(size = grid.width) {-1} }
+    val labeledKeyboardArr = Array(size = keyboardWidth) { IntArray(size = keyboardHeight) {-1} }
 
-    for (key in grid.keys) {
 
+    for (key in allowedKeys) {
         val token = tokenizer.tokenToId[key.label]!!
         val hitbox = key.hitbox
 
@@ -40,12 +48,12 @@ fun getNKL(): Array<IntArray>{
         }
     }
 
-    for (i in 0..< grid.width) {
-        for (j in 0..<grid.height) {
+    for (i in 0..< keyboardWidth) {
+        for (j in 0..<keyboardHeight) {
             if (labeledKeyboardArr[i][j] != -1) {
                 continue
             }
-            labeledKeyboardArr[i][j] = getNearestKeyTokenWithoutMap(i, j, grid.keys)
+            labeledKeyboardArr[i][j] = getNearestKeyTokenWithoutMap(i, j, allowedKeys)
         }
     }
 

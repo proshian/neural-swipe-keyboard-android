@@ -15,6 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.TrajFeatsGetter
+import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getNKL
+import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getNearestKeys
+import com.example.executorch_neuroswipe_example_1.searchAlgorithms.greedySearch
+import com.example.executorch_neuroswipe_example_1.tokenizers.RuSubwordTokenizer
 import com.example.executorch_neuroswipe_example_1.ui.theme.Executorch_neuroswipe_example_1Theme
 import org.pytorch.executorch.EValue
 import org.pytorch.executorch.Module
@@ -22,11 +27,6 @@ import org.pytorch.executorch.Tensor
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import com.example.executorch_neuroswipe_example_1.searchAlgorithms.greedySearch
-import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.TrajFeatsGetter
-import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getNKL
-import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getNearestKeys
-import com.example.executorch_neuroswipe_example_1.tokenizers.RuSubwordTokenizer
 import kotlin.system.measureTimeMillis
 
 
@@ -37,9 +37,6 @@ class MainActivity : ComponentActivity() {
     private val nearestKeyLookup = getNKL()
 
     companion object {
-
-
-
         @Throws(IOException::class)
         fun assetFilePath(context: Context, assetName: String): String {
             val file = File(context.filesDir, assetName)
@@ -75,12 +72,16 @@ class MainActivity : ComponentActivity() {
             finish()
         }
 
-
         val modelFileName: String = "xnnpack_my_nearest_feats.pte"
 
 
-        mModule = Module.load(assetFilePath(applicationContext, modelFileName))
-
+        try {
+            mModule =
+                Module.load(assetFilePath(applicationContext, modelFileName))
+        } catch (e: IOException) {
+            Log.e("ImageSegmentation", "Error reading assets", e)
+            finish()
+        }
 
 
         val x = intArrayOf(872,858,840,798,743,713,653,624,609,599,591,587,584,585,600,644,683,720,753,786,807,827,845,860,864,867,869,869,861,824,758,740,702,665,632,611,600,593,588,587,590,596,603,609,606,600,554,482,408,347,291,242,206,173,146,126,111,104,98,92,86,80,65,57,54,50,50,48,48,48)
@@ -128,11 +129,11 @@ class MainActivity : ComponentActivity() {
         Log.i("MyTag", "decodedString: $decodedString")
 
 
-        val time = measureTimeMillis {
-            getNKL()
-        }
-
-        Log.i("MyTag", "time: $time")
+//        val time = measureTimeMillis {
+//            getNKL()
+//        }
+//
+//        Log.i("MyTag", "time: $time")
 
 
 
