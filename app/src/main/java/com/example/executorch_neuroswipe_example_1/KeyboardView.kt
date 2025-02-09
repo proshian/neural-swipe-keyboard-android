@@ -41,6 +41,53 @@ class KeyboardView(context: Context) : View(context) {
     private val paint = Paint()
     private var scale: Float = 1f
 
+    private val xPoints = mutableListOf<Int>()
+    private val yPoints = mutableListOf<Int>()
+    private val tPoints = mutableListOf<Int>()
+    private var startTime: Long = 0
+
+    var onSwipeListener: OnSwipeListener? = null
+
+    interface OnSwipeListener {
+        fun onSwipeCompleted(x: IntArray, y: IntArray, t: IntArray)
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                xPoints.clear()
+                yPoints.clear()
+                tPoints.clear()
+                startTime = event.eventTime
+                addPoint(event)
+                return true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                addPoint(event)
+                invalidate()
+                return true
+            }
+            MotionEvent.ACTION_UP -> {
+                addPoint(event)
+                val x = xPoints.toIntArray()
+                val y = yPoints.toIntArray()
+                val t = tPoints.toIntArray()
+                onSwipeListener?.onSwipeCompleted(x, y, t)
+                return true
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
+    private fun addPoint(event: MotionEvent) {
+        val x = (event.x / scale).toInt()
+        val y = (event.y / scale).toInt()
+        val t = (event.eventTime - startTime).toInt()
+        xPoints.add(x)
+        yPoints.add(y)
+        tPoints.add(t)
+    }
+
 
     init {
         paint.color = Color.BLACK

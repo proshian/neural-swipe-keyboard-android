@@ -1,6 +1,9 @@
 package com.example.executorch_neuroswipe_example_1
 
 import android.inputmethodservice.InputMethodService
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.Gravity
 import android.view.inputmethod.EditorInfo
@@ -13,11 +16,64 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getDefaultGrid
+import com.example.executorch_neuroswipe_example_1.assertUtils.AssetUtils
+import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.GreedySearch
+import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.TrajFeatsGetter
+import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getNKL
+import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getNearestKeys
+import com.example.executorch_neuroswipe_example_1.swipeTypingDecoders.NeuralSwipeTypingDecoder
+import com.example.executorch_neuroswipe_example_1.tokenizers.RuSubwordTokenizer
+import org.pytorch.executorch.EValue
+import org.pytorch.executorch.Module
+import org.pytorch.executorch.Tensor
+import java.io.IOException
 
 class NeuralIME : InputMethodService() {
     private var keyboardView: KeyboardView? = null
     private var candidatesRecyclerView: RecyclerView? = null
     private lateinit var candidatesAdapter: CandidateAdapter
+    private lateinit var neuralSwipeTypingDecoder: NeuralSwipeTypingDecoder
+
+    override fun onCreate() {
+        super.onCreate()
+        initializeDecoder()
+    }
+
+    private fun initializeDecoder() {
+        try {
+            val modelFileName = "xnnpack_my_nearest_feats.pte"
+            val modelPath = AssetUtils.assetFilePath(applicationContext, modelFileName)
+            val encoderDecoderModule = Module.load(modelPath)
+                ?: throw IllegalStateException("Model loading failed")
+
+            val greedySearch = GreedySearch(
+                encoderDecoderModule,
+                sosToken = 36,
+                eosToken = 33,
+                maxSteps = 35
+            )
+            val subwordTokenizer = RuSubwordTokenizer()
+            val xytTransform: (IntArray, IntArray, IntArray) -> Array<EValue> = { x, y, t ->
+                val trajFeatsGetter = TrajFeatsGetter()
+                val nearestKeyLookup = getNKL()
+                val exampleCoordFeats = trajFeatsGetter.getFeats(x, y, t, "default")
+                val nearestKeysArray = getNearestKeys(x, y, nearestKeyLookup)
+                val exampleNearestKeys = Tensor.fromBlob(nearestKeysArray, longArrayOf(x.size.toLong(), 1))
+                arrayOf(EValue.from(exampleCoordFeats), EValue.from(exampleNearestKeys))
+            }
+
+            neuralSwipeTypingDecoder = NeuralSwipeTypingDecoder(
+                encoderDecoderModule,
+                greedySearch,
+                subwordTokenizer,
+                xytTransform
+            )
+        } catch (e: IOException) {
+            Log.e("NeuralIME", "Decoder initialization failed", e)
+        }
+    }
+
+
 
     override fun onCreateInputView(): View {
         val rootView = LinearLayout(this).apply {
@@ -76,7 +132,21 @@ class NeuralIME : InputMethodService() {
             insets
         }
 
+
+        keyboardView?.onSwipeListener = object : KeyboardView.OnSwipeListener {
+            override fun onSwipeCompleted(x: IntArray, y: IntArray, t: IntArray) {
+                Thread {
+                    val candidates = neuralSwipeTypingDecoder.decodeSwipe(x, y, t)
+                    Handler(Looper.getMainLooper()).post {
+                        candidatesAdapter.updateCandidates(candidates)
+                    }
+                }.start()
+            }
+        }
+
+
         return rootView
+
     }
 
     override fun onStartInputView(attribute: EditorInfo?, restarting: Boolean) {
