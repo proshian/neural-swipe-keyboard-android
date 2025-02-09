@@ -31,6 +31,7 @@ fun getDefaultGrid(): KeyboardGrid {
         KeyboardKey("д", KeyboardKeyHitbox(785, 169, 100, 154)),
         KeyboardKey("ж", KeyboardKeyHitbox(884, 169, 99, 154)),
         KeyboardKey("э", KeyboardKeyHitbox(982, 169, 98, 154)),
+        KeyboardKey("", KeyboardKeyHitbox(0, 323, 120, 154)),  // shift
         KeyboardKey("я", KeyboardKeyHitbox(119, 323, 94, 154)),
         KeyboardKey("ч", KeyboardKeyHitbox(212, 323, 95, 154)),
         KeyboardKey("с", KeyboardKeyHitbox(306, 323, 94, 154)),
@@ -40,7 +41,12 @@ fun getDefaultGrid(): KeyboardGrid {
         KeyboardKey("ь", KeyboardKeyHitbox(680, 323, 94, 154)),
         KeyboardKey("б", KeyboardKeyHitbox(773, 323, 95, 154)),
         KeyboardKey("ю", KeyboardKeyHitbox(867, 323, 95, 154)),
+        KeyboardKey("", KeyboardKeyHitbox(961, 323, 119, 154)),  // backspace
+        KeyboardKey("", KeyboardKeyHitbox(0, 477, 141, 154)),  // toNumberState
+        KeyboardKey("", KeyboardKeyHitbox(140, 477, 120, 154)),  // globe
+        KeyboardKey("", KeyboardKeyHitbox(259, 477, 98, 154)),  // ,
+        KeyboardKey("", KeyboardKeyHitbox(356, 477, 455, 154)),  // space
+        KeyboardKey("", KeyboardKeyHitbox(810, 477, 98, 154)),  // .
+        KeyboardKey("", KeyboardKeyHitbox(907, 477, 173, 154)),  // enter
     ))
 }
-
-

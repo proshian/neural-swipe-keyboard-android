@@ -1,4 +1,4 @@
-package com.example.executorch_neuroswipe_example_1.searchAlgorithms
+package com.example.executorch_neuroswipe_example_1.decodingAlgorithms
 
 import org.pytorch.executorch.EValue
 import org.pytorch.executorch.Module
@@ -14,7 +14,7 @@ fun getLastStepLogits(allLogitsTensor: Tensor): FloatArray {
 }
 
 fun greedySearch(encoded: EValue, module: Module, sosToken: Int,
-                 eosToken: Int, maxSteps: Int): SearchAlgorithmResult {
+                 eosToken: Int, maxSteps: Int): List<ScoredTokenSequenceCandidate>  {
     val decoderInputList = mutableListOf(sosToken)
     var logProb = 0.0f
 
@@ -41,5 +41,18 @@ fun greedySearch(encoded: EValue, module: Module, sosToken: Int,
         }
     }
 
-    return SearchAlgorithmResult(decoderInputList.toIntArray(), logProb)
+    return listOf(ScoredTokenSequenceCandidate(decoderInputList.toIntArray(), logProb))
+}
+
+
+class GreedySearch(
+    private val module: Module,
+    private val sosToken: Int,
+    private val eosToken: Int,
+    private val maxSteps: Int
+) : DecodingAlgorithm() {
+
+    override fun decode(encoded: EValue): List<ScoredTokenSequenceCandidate> {
+        return greedySearch(encoded, module, sosToken, eosToken, maxSteps)
+    }
 }
