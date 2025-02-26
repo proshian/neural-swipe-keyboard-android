@@ -4,18 +4,6 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <compositeConfiguration>
-          <compositeBuild compositeDefinitionSource="SCRIPT">
-            <builds>
-              <build path="$USER_HOME$/Documents/executorch_test_examples/executorch_getting_started_example/executorch/extension/android" name="executorch">
-                <projects>
-                  <project path="$USER_HOME$/Documents/executorch_test_examples/executorch_getting_started_example/executorch/extension/android" />
-                  <project path="$USER_HOME$/Documents/executorch_test_examples/executorch_getting_started_example/executorch/extension/android/src" />
-                </projects>
-              </build>
-            </builds>
-          </compositeBuild>
-        </compositeConfiguration>
         <option name="testRunner" value="CHOOSE_PER_TEST" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
@@ -23,8 +11,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$USER_HOME$/Documents/executorch_test_examples/executorch_getting_started_example/executorch/extension/android" />
-            <option value="$USER_HOME$/Documents/executorch_test_examples/executorch_getting_started_example/executorch/extension/android/src" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

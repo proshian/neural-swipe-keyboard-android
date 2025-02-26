@@ -18,19 +18,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild { cmake { cppFlags += "" } }
 
-//        // ! NOT PRESENT IN THE OFFICIAL TUTORIAL
 
-//        ndk {
-//            abiFilters.add("arm64-v8a")
-//        }
-    }
-
-//        // ! NOT PRESENT IN THE OFFICIAL TUTORIAL
-//    sourceSets {
-//        getByName("main") {
-//            jniLibs.srcDirs("src/main/jniLibs")
-//        }
-//    }
 
     buildTypes {
         release {
@@ -74,12 +62,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("com.facebook.soloader:soloader:0.10.5")
     implementation("com.facebook.fbjni:fbjni:0.5.1")
-    implementation("org.pytorch.executorch:executorch") {
-        exclude("com.facebook.fbjni", "fbjni-java-only")
+    implementation(files("libs/executorch.aar"))
     }
 
-
-//    sourceSets {
-//        getByName("main").jniLibs.srcDirs("src/main/jniLibs")
-//    }
 }

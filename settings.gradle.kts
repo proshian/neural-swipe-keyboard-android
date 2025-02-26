@@ -21,5 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "executorch_neuroswipe_example_1"
 include(":app")
-
-includeBuild("../../Documents/executorch_test_examples/executorch_getting_started_example/executorch/extension/android")

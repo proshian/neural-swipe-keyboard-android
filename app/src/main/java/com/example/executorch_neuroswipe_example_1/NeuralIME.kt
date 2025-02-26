@@ -87,7 +87,7 @@ class NeuralIME : InputMethodService() {
 
         candidatesAdapter = CandidateAdapter(emptyList()) { selectedCandidate ->
             // Handle candidate selection
-            currentInputConnection?.commitText(selectedCandidate, 1)
+            currentInputConnection?.commitText(" $selectedCandidate", 1)
         }
 
 
