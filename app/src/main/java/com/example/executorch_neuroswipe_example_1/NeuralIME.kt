@@ -5,9 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.Gravity
 import android.view.inputmethod.EditorInfo
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -19,8 +17,9 @@ import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getDefa
 import com.example.executorch_neuroswipe_example_1.assertUtils.AssetUtils
 import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.GreedySearch
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.TrajFeatsGetter
-import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getNKL
-import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getNearestKeys
+import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.FeatureExtractor
+import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.NearestKeysGetter
+import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.FeatureExtractorAggregator
 import com.example.executorch_neuroswipe_example_1.swipeTypingDecoders.NeuralSwipeTypingDecoder
 import com.example.executorch_neuroswipe_example_1.tokenizers.RuSubwordTokenizer
 import org.pytorch.executorch.EValue
@@ -53,20 +52,24 @@ class NeuralIME : InputMethodService() {
                 maxSteps = 35
             )
             val subwordTokenizer = RuSubwordTokenizer()
-            val xytTransform: (IntArray, IntArray, IntArray) -> Array<EValue> = { x, y, t ->
-                val trajFeatsGetter = TrajFeatsGetter()
-                val nearestKeyLookup = getNKL()
-                val exampleCoordFeats = trajFeatsGetter.getFeats(x, y, t, "default")
-                val nearestKeysArray = getNearestKeys(x, y, nearestKeyLookup)
-                val exampleNearestKeys = Tensor.fromBlob(nearestKeysArray, longArrayOf(x.size.toLong(), 1))
-                arrayOf(EValue.from(exampleCoordFeats), EValue.from(exampleNearestKeys))
-            }
+
+            val allowedKeyLabels = arrayOf(
+                "а", "б", "в", "г", "д", "е", "ë", "ж", "з", "и", "й",
+                "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
+                "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"
+            )
+            val nearestKeysGetter = NearestKeysGetter(allowedKeyLabels)
+            val trajFeatsGetter = TrajFeatsGetter()
+
+            val coordFeatsAndNearestKeyGetter = FeatureExtractorAggregator(
+                listOf(trajFeatsGetter, nearestKeysGetter)
+            )
 
             neuralSwipeTypingDecoder = NeuralSwipeTypingDecoder(
                 encoderDecoderModule,
                 greedySearch,
                 subwordTokenizer,
-                xytTransform
+                coordFeatsAndNearestKeyGetter
             )
         } catch (e: IOException) {
             Log.e("NeuralIME", "Decoder initialization failed", e)

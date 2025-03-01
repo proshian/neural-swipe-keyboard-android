@@ -2,6 +2,7 @@ package com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction
 
 import org.pytorch.executorch.Tensor
 import android.util.Log
+import org.pytorch.executorch.EValue
 
 fun getDxDt(x: FloatArray, t: FloatArray): FloatArray {
     val dxDt = FloatArray(x.size){0f}
@@ -18,7 +19,7 @@ class TrajFeatsGetter(
     private val includeVelocities: Boolean = true,
     private val includeAccelerations: Boolean = true,
     private val gridNameToWh: Map<String, Pair<Int, Int>> = mapOf("default" to Pair(1080, 667)),
-    ) {
+    ) : FeatureExtractor {
 
     init {
         if (includeAccelerations && !includeVelocities) {
@@ -87,5 +88,11 @@ class TrajFeatsGetter(
         }
 
         return Tensor.fromBlob(data, tensor.shape())
+    }
+
+    override fun invoke(x: IntArray, y: IntArray, t: IntArray): Array<EValue> {
+        val gridName = "default" // Use the default grid name for now
+        val tensor = getFeats(x, y, t, gridName)
+        return arrayOf(EValue.from(tensor))
     }
 }
