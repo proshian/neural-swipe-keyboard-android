@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getDefaultGrid
 import com.example.executorch_neuroswipe_example_1.assertUtils.AssetUtils
+import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.BeamSearch
 import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.GreedySearch
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.TrajFeatsGetter
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.FeatureExtractor
@@ -45,12 +46,22 @@ class NeuralIME : InputMethodService() {
             val encoderDecoderModule = Module.load(modelPath)
                 ?: throw IllegalStateException("Model loading failed")
 
-            val greedySearch = GreedySearch(
+//            val decodingAlgorithm = GreedySearch(
+//                encoderDecoderModule,
+//                sosToken = 36,
+//                eosToken = 33,
+//                maxSteps = 35
+//            )
+
+            val decodingAlgorithm = BeamSearch(
                 encoderDecoderModule,
                 sosToken = 36,
                 eosToken = 33,
-                maxSteps = 35
+                maxSteps = 35,
+                beamSize = 6
             )
+
+
             val subwordTokenizer = RuSubwordTokenizer()
 
             val allowedKeyLabels = arrayOf(
@@ -67,7 +78,7 @@ class NeuralIME : InputMethodService() {
 
             neuralSwipeTypingDecoder = NeuralSwipeTypingDecoder(
                 encoderDecoderModule,
-                greedySearch,
+                decodingAlgorithm,
                 subwordTokenizer,
                 coordFeatsAndNearestKeyGetter
             )

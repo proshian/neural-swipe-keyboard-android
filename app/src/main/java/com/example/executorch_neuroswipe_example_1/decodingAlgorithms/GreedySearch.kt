@@ -6,12 +6,7 @@ import org.pytorch.executorch.Tensor
 import com.example.executorch_neuroswipe_example_1.neuralNetworkComponents.logSoftmax
 
 
-fun getLastStepLogits(allLogitsTensor: Tensor): FloatArray {
-    val seqLen = allLogitsTensor.shape()[0].toInt()
-    val outDim = allLogitsTensor.shape()[2].toInt()
-    val arr = allLogitsTensor.dataAsFloatArray
-    return arr.slice(outDim*(seqLen-1)..<outDim*seqLen).toFloatArray()
-}
+
 
 fun greedySearch(encoded: EValue, module: Module, sosToken: Int,
                  eosToken: Int, maxSteps: Int): List<ScoredTokenSequenceCandidate>  {
