@@ -6,10 +6,34 @@ import org.pytorch.executorch.Tensor
 import com.example.executorch_neuroswipe_example_1.neuralNetworkComponents.logSoftmax
 
 
+class GreedySearch(
+    private val module: Module,
+    private val sosToken: Int,
+    private val eosToken: Int,
+    private val maxSteps: Int,
+    private val logitsProcessor: LogitsProcessor? = null
+) : DecodingAlgorithm() {
 
+    override fun decode(encoded: EValue): List<ScoredTokenSequenceCandidate> {
+        return greedySearch(
+            encoded,
+            module,
+            sosToken,
+            eosToken,
+            maxSteps,
+            logitsProcessor
+        )
+    }
+}
 
-fun greedySearch(encoded: EValue, module: Module, sosToken: Int,
-                 eosToken: Int, maxSteps: Int): List<ScoredTokenSequenceCandidate>  {
+fun greedySearch(
+    encoded: EValue,
+    module: Module,
+    sosToken: Int,
+    eosToken: Int,
+    maxSteps: Int,
+    logitsProcessor: LogitsProcessor? = null
+): List<ScoredTokenSequenceCandidate> {
     val decoderInputList = mutableListOf(sosToken)
     var logProb = 0.0f
 
@@ -25,8 +49,10 @@ fun greedySearch(encoded: EValue, module: Module, sosToken: Int,
 
         val allLogitsTensor = decodedEValue.toTensor()
         val nextTokenLogits = getLastStepLogits(allLogitsTensor)
+        val processedLogits = logitsProcessor?.process(nextTokenLogits, decoderInputList.toList())
+            ?: nextTokenLogits
 
-        val logProbs = logSoftmax(nextTokenLogits)
+        val logProbs = logSoftmax(processedLogits)
         val mostProbableTokenId = logProbs.indices.maxByOrNull { logProbs[it] }!!
         logProb -= logProbs[mostProbableTokenId]
         decoderInputList.add(mostProbableTokenId)
@@ -40,14 +66,3 @@ fun greedySearch(encoded: EValue, module: Module, sosToken: Int,
 }
 
 
-class GreedySearch(
-    private val module: Module,
-    private val sosToken: Int,
-    private val eosToken: Int,
-    private val maxSteps: Int
-) : DecodingAlgorithm() {
-
-    override fun decode(encoded: EValue): List<ScoredTokenSequenceCandidate> {
-        return greedySearch(encoded, module, sosToken, eosToken, maxSteps)
-    }
-}

@@ -58,7 +58,10 @@ class RuSubwordTokenizer: TokenMapsContainer, StringTokenizer  {
 
 
    override fun tokenize(str: String): IntArray {
-      return str.map { tokenToId[it.toString()] ?: tokenToId["<unk>"]!! }.toIntArray()
+       val tokens = mutableListOf<Int>()
+       str.forEach { tokens.add(tokenToId[it.toString()] ?: tokenToId["<unk>"]!!)}
+       val tokensWithSpecials = listOf(tokenToId["<sos>"]!!) + tokens + listOf(tokenToId["<eos>"]!!)
+       return tokensWithSpecials.toIntArray()
    }
 
    override fun detokenize(ids: IntArray): String {

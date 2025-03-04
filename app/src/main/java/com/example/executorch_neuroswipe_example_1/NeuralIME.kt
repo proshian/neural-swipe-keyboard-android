@@ -17,6 +17,7 @@ import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.getDefa
 import com.example.executorch_neuroswipe_example_1.assertUtils.AssetUtils
 import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.BeamSearch
 import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.GreedySearch
+import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.VocabularyLogitsProcessor
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.TrajFeatsGetter
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.FeatureExtractor
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.NearestKeysGetter
@@ -46,11 +47,22 @@ class NeuralIME : InputMethodService() {
             val encoderDecoderModule = Module.load(modelPath)
                 ?: throw IllegalStateException("Model loading failed")
 
+
+            val subwordTokenizer = RuSubwordTokenizer()
+
+
+            val vocab = loadVocabulary("voc.txt")
+            val maxTokenId = 34
+            val logitsProcessor = VocabularyLogitsProcessor(subwordTokenizer, vocab, maxTokenId)
+
+
+
 //            val decodingAlgorithm = GreedySearch(
 //                encoderDecoderModule,
 //                sosToken = 36,
 //                eosToken = 33,
-//                maxSteps = 35
+//                maxSteps = 35,
+//                logitsProcessor=logitsProcessor
 //            )
 
             val decodingAlgorithm = BeamSearch(
@@ -58,11 +70,11 @@ class NeuralIME : InputMethodService() {
                 sosToken = 36,
                 eosToken = 33,
                 maxSteps = 35,
-                beamSize = 6
+                beamSize = 6,
+                logitsProcessor=logitsProcessor
             )
 
 
-            val subwordTokenizer = RuSubwordTokenizer()
 
             val allowedKeyLabels = arrayOf(
                 "а", "б", "в", "г", "д", "е", "ë", "ж", "з", "и", "й",
@@ -84,6 +96,13 @@ class NeuralIME : InputMethodService() {
             )
         } catch (e: IOException) {
             Log.e("NeuralIME", "Decoder initialization failed", e)
+        }
+    }
+
+
+    private fun loadVocabulary(filename: String): List<String> {
+        return assets.open(filename).bufferedReader().useLines {
+            it.filterNot { line -> line.isBlank() }.toList()
         }
     }
 
