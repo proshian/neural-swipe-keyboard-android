@@ -24,9 +24,7 @@ import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.Nearest
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.FeatureExtractorAggregator
 import com.example.executorch_neuroswipe_example_1.swipeTypingDecoders.NeuralSwipeTypingDecoder
 import com.example.executorch_neuroswipe_example_1.tokenizers.RuSubwordTokenizer
-import org.pytorch.executorch.EValue
 import org.pytorch.executorch.Module
-import org.pytorch.executorch.Tensor
 import java.io.IOException
 
 class NeuralIME : InputMethodService() {
@@ -52,23 +50,29 @@ class NeuralIME : InputMethodService() {
 
 
             val vocab = loadVocabulary("voc.txt")
-            val maxTokenId = 34
+            val maxTokenId = 34  // num_classes - 1
             val logitsProcessor = VocabularyLogitsProcessor(subwordTokenizer, vocab, maxTokenId)
+            
 
+            val sosToken = subwordTokenizer.tokenToId["<sos>"] ?: throw IllegalStateException(
+                "subwordTokenizer doesn't have a <sos> token")
+            val eosToken = subwordTokenizer.tokenToId["<eos>"] ?: throw IllegalStateException(
+                "subwordTokenizer doesn't have a <eos> token")
 
 
 //            val decodingAlgorithm = GreedySearch(
 //                encoderDecoderModule,
-//                sosToken = 36,
-//                eosToken = 33,
+//                sosToken = sosToken,
+//                eosToken = eosToken,
 //                maxSteps = 35,
 //                logitsProcessor=logitsProcessor
 //            )
 
+
             val decodingAlgorithm = BeamSearch(
                 encoderDecoderModule,
-                sosToken = 36,
-                eosToken = 33,
+                sosToken = sosToken,
+                eosToken = eosToken,
                 maxSteps = 35,
                 beamSize = 6,
                 logitsProcessor=logitsProcessor
