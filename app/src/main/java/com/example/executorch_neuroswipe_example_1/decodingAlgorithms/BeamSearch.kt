@@ -61,7 +61,7 @@ fun beamSearch(
                 "Unexpected null hypothesis in partialHypotheses priority queue")
 
         val currentTokens = currentHypothesis.tokens
-        if (currentTokens.lastOrNull() == eosToken || currentTokens.size - 1 >= maxSteps) {
+        if (currentTokens.last() == eosToken || currentTokens.size - 1 >= maxSteps) {
             finalHypotheses.add(currentHypothesis)
             continue
         }
@@ -119,7 +119,6 @@ fun beamSearch(
         }
     }
 
-    // Prepare final results
     val sortedResults = finalHypotheses
         .sortedBy { it.score }
         .map { ScoredTokenSequenceCandidate(it.tokens.toIntArray(), it.score) }

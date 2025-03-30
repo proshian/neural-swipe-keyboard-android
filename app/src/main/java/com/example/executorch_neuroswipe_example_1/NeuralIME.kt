@@ -18,6 +18,11 @@ import com.example.executorch_neuroswipe_example_1.assertUtils.AssetUtils
 import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.BeamSearch
 import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.GreedySearch
 import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.VocabularyLogitsProcessor
+import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.VocabularyLogitsProcessorV2
+//import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.VocabularyLogitsProcessorV3
+//import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.VocabularyLogitsProcessorV4
+import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.VocabularyLogitsProcessorFromPrebuiltTrie
+import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.VocabularyLogitsProcessorFromPrebuiltTrieV2
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.TrajFeatsGetter
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.FeatureExtractor
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.NearestKeysGetter
@@ -26,6 +31,8 @@ import com.example.executorch_neuroswipe_example_1.swipeTypingDecoders.NeuralSwi
 import com.example.executorch_neuroswipe_example_1.tokenizers.RuSubwordTokenizer
 import org.pytorch.executorch.Module
 import java.io.IOException
+
+
 
 class NeuralIME : InputMethodService() {
     private var keyboardView: KeyboardView? = null
@@ -45,14 +52,14 @@ class NeuralIME : InputMethodService() {
             val encoderDecoderModule = Module.load(modelPath)
                 ?: throw IllegalStateException("Model loading failed")
 
-
             val subwordTokenizer = RuSubwordTokenizer()
-
 
             val vocab = loadVocabulary("voc.txt")
             val maxTokenId = 34  // num_classes - 1
-            val logitsProcessor = VocabularyLogitsProcessor(subwordTokenizer, vocab, maxTokenId)
-            
+
+//            val logitsProcessor = VocabularyLogitsProcessorV2(subwordTokenizer, vocab, maxTokenId)
+            val logitsProcessor = VocabularyLogitsProcessorFromPrebuiltTrieV2(
+                subwordTokenizer, applicationContext, maxTokenId, "trie.ser")
 
             val sosToken = subwordTokenizer.tokenToId["<sos>"] ?: throw IllegalStateException(
                 "subwordTokenizer doesn't have a <sos> token")
@@ -60,24 +67,14 @@ class NeuralIME : InputMethodService() {
                 "subwordTokenizer doesn't have a <eos> token")
 
 
-//            val decodingAlgorithm = GreedySearch(
-//                encoderDecoderModule,
-//                sosToken = sosToken,
-//                eosToken = eosToken,
-//                maxSteps = 35,
-//                logitsProcessor=logitsProcessor
-//            )
-
-
             val decodingAlgorithm = BeamSearch(
                 encoderDecoderModule,
                 sosToken = sosToken,
                 eosToken = eosToken,
                 maxSteps = 35,
-                beamSize = 6,
+                beamSize = 5,
                 logitsProcessor=logitsProcessor
             )
-
 
 
             val allowedKeyLabels = arrayOf(
@@ -109,7 +106,6 @@ class NeuralIME : InputMethodService() {
             it.filterNot { line -> line.isBlank() }.toList()
         }
     }
-
 
 
     override fun onCreateInputView(): View {

@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "executorch_neuroswipe_example_1"
 include(":app")
+include(":trie")
+include(":trie-builder")

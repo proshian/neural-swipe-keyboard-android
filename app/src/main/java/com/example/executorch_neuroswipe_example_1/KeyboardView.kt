@@ -8,30 +8,6 @@ import android.view.MotionEvent
 import android.view.View
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.KeyboardGrid
 import com.example.executorch_neuroswipe_example_1.ngtFeaturesExtraction.KeyboardKey
-import kotlin.math.round
-//import com.example.executorch_neuroswipe_example_1.swipeTypingDecoders.NeuralSwipeTypingDecoder
-//
-
-
-
-
-//
-//val swipePoints = mutableListOf<SwipePoint>()
-//data class SwipePoint(val x: Float, val y: Float, val timestamp: Long)
-//
-//fun getSwipeCandidates() {
-//    // Assuming your decoder expects an array of coordinates and time
-//    val x = swipePoints.map { it.x }
-//    val y = swipePoints.map { it.y }
-//    val t = swipePoints.map { it.timestamp }
-//
-//    // Call the decoder to get the predicted candidates
-//    val candidates = NeuroSwipeTypingDecoder.getCandidates(x, y, t)
-//
-//    // Now update your UI with the candidates
-//    updateCandidatesInUI(candidates)
-//}
-
 
 
 

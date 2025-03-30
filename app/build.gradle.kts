@@ -43,7 +43,9 @@ android {
     buildToolsVersion = "34.0.0"
 }
 
-dependencies {
+    dependencies {
+    implementation(libs.kotlinx.collections.immutable)
+    implementation(project(":trie"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

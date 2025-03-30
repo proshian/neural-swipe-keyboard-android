@@ -6,7 +6,6 @@ import com.example.executorch_neuroswipe_example_1.tokenizers.RuSubwordTokenizer
 class VocabularyLogitsProcessor(
     private val tokenizer: RuSubwordTokenizer,
     private val vocab: List<String>,
-    private val maxTokenId: Int
 ) : LogitsProcessor() {
 
     private val prefixToAllowedIds: Map<List<Int>, Set<Int>> = createPrefixToAllowedIds()
@@ -30,9 +29,8 @@ class VocabularyLogitsProcessor(
             Log.w("", "empty allowed ids for prefix ${inputIds.joinToString(", ")}")
             emptySet<Int>()
         }
-        val impossibleIds = (maxTokenId + 1 until tokenizer.idToToken.size).toSet()
         (logits.indices)
-            .filterNot { it in allowedIds || it in impossibleIds }
+            .filterNot { it in allowedIds }
             .forEach { logits[it] = Float.NEGATIVE_INFINITY }
         return logits
     }
