@@ -8,8 +8,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -125,7 +123,6 @@ class NeuralIME : InputMethodService() {
 
 
 
-        // Candidates RecyclerView
         candidatesRecyclerView = RecyclerView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -140,7 +137,7 @@ class NeuralIME : InputMethodService() {
             background = ContextCompat.getDrawable(context, R.drawable.candidates_background)
         }
 
-        // Keyboard View
+
         keyboardView = KeyboardView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -152,18 +149,6 @@ class NeuralIME : InputMethodService() {
 
         rootView.addView(candidatesRecyclerView)
         rootView.addView(keyboardView)
-
-        // Handle window insets
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(
-                systemBars.left,
-                systemBars.top,
-                systemBars.right,
-                systemBars.bottom
-            )
-            insets
-        }
 
 
         keyboardView?.onSwipeListener = object : KeyboardView.OnSwipeListener {
