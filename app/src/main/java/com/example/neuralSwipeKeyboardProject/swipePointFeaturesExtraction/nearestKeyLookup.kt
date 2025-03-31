@@ -24,7 +24,7 @@ fun getNearestKeyTokenWithoutMap(i: Int, j: Int, keys: List<KeyboardKey>): Int {
 
 class NearestKeysGetter(private val allowedKeyLabels: Array<String>) : FeatureExtractor  {
     private val nkl: Array<IntArray>
-    private val allowedKeys: List<KeyboardKey>
+    private val allowedKeys: List<KeyboardKey.CharacterKey>
     private val keyboardWidth: Int
     private val keyboardHeight: Int
 
@@ -32,11 +32,13 @@ class NearestKeysGetter(private val allowedKeyLabels: Array<String>) : FeatureEx
         val grid = getDefaultGrid()
         keyboardWidth = grid.width
         keyboardHeight = grid.height
-        allowedKeys = grid.keys.filter { it.label in allowedKeyLabels }
+
+        allowedKeys = grid.keys.filterIsInstance<KeyboardKey.CharacterKey>()
+            .filter { it.label in allowedKeyLabels }
         nkl = createNearestKeysArray(allowedKeys)
     }
 
-    private fun createNearestKeysArray(allowedKeys: List<KeyboardKey>): Array<IntArray> {
+    private fun createNearestKeysArray(allowedKeys: List<KeyboardKey.CharacterKey>): Array<IntArray> {
         val tokenizer = KeyboardKeyTokenizer()
         val labeledKeyboardArr = Array(keyboardWidth) { IntArray(keyboardHeight) { -1 } }
 

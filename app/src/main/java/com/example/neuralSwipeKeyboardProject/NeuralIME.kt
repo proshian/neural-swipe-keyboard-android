@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.neuralSwipeKeyboardProject.keyboardGrid.getDefaultGrid
+import com.example.neuralSwipeKeyboardProject.keyboardGrid.KeyboardGridReader
 import com.example.neuralSwipeKeyboardProject.assertUtils.AssetUtils
 import com.example.neuralSwipeKeyboardProject.decodingAlgorithms.BeamSearch
 //import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.VocabularyLogitsProcessorV3
@@ -158,6 +159,8 @@ class NeuralIME : InputMethodService() {
 
     override fun onStartInputView(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
-        keyboardView?.setKeyboard(getDefaultGrid())
+        val keyboardGridReader = KeyboardGridReader(this)
+        val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets("default.json")
+        keyboardView?.setKeyboard(keyboardGrid)
     }
 }

@@ -154,11 +154,19 @@ class KeyboardView(context: Context) : View(context) {
         paint.style = Paint.Style.FILL
         val metrics = paint.fontMetrics
         val verticalOffset = (metrics.descent - metrics.ascent) / 2 - metrics.descent
-        canvas.drawText(
-            key.label,
-            hitbox.x * scale + hitbox.w / 2f * scale,
-            hitbox.y * scale + hitbox.h * scale / 2f + verticalOffset,
-            paint
-        )
+
+        when (key) {
+            is KeyboardKey.CharacterKey -> {
+                canvas.drawText(
+                    key.label,
+                    hitbox.x * scale + hitbox.w / 2f * scale,
+                    hitbox.y * scale + hitbox.h * scale / 2f + verticalOffset,
+                    paint
+                )
+            }
+            is KeyboardKey.ActionKey -> {
+
+            }
+        }
     }
 }
