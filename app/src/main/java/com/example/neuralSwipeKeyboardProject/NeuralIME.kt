@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.neuralSwipeKeyboardProject.keyboardGrid.getDefaultGrid
 import com.example.neuralSwipeKeyboardProject.keyboardGrid.KeyboardGridReader
 import com.example.neuralSwipeKeyboardProject.assertUtils.AssetUtils
 import com.example.neuralSwipeKeyboardProject.decodingAlgorithms.BeamSearch
@@ -33,6 +32,7 @@ class NeuralIME : InputMethodService() {
     private var candidatesRecyclerView: RecyclerView? = null
     private lateinit var candidatesAdapter: CandidateAdapter
     private lateinit var neuralSwipeTypingDecoder: NeuralSwipeTypingDecoder
+    private var currentGridName = "default"
 
     override fun onCreate() {
         super.onCreate()
@@ -76,7 +76,9 @@ class NeuralIME : InputMethodService() {
                 "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
                 "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"
             )
-            val nearestKeysGetter = NearestKeysGetter(allowedKeyLabels)
+            val keyboardGridReader = KeyboardGridReader(this)
+            val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets("${currentGridName}.json")
+            val nearestKeysGetter = NearestKeysGetter(allowedKeyLabels, keyboardGrid)
             val trajFeatsGetter = TrajFeatsGetter()
 
             val coordFeatsAndNearestKeyGetter = FeatureExtractorAggregator(
@@ -160,7 +162,7 @@ class NeuralIME : InputMethodService() {
     override fun onStartInputView(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
         val keyboardGridReader = KeyboardGridReader(this)
-        val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets("default.json")
+        val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets("${currentGridName}.json")
         keyboardView?.setKeyboard(keyboardGrid)
     }
 }

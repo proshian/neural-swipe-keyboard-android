@@ -1,8 +1,8 @@
 package com.example.neuralSwipeKeyboardProject.swipePointFeaturesExtraction
 
 import com.example.neuralSwipeKeyboardProject.keyboardGrid.KeyboardKey
-import com.example.neuralSwipeKeyboardProject.keyboardGrid.getDefaultGrid
 import com.example.neuralSwipeKeyboardProject.tokenizers.KeyboardKeyTokenizer
+import com.example.neuralSwipeKeyboardProject.keyboardGrid.KeyboardGrid
 import org.pytorch.executorch.EValue
 import org.pytorch.executorch.Tensor
 import kotlin.math.pow
@@ -22,19 +22,16 @@ fun getNearestKeyTokenWithoutMap(i: Int, j: Int, keys: List<KeyboardKey>): Int {
 }
 
 
-class NearestKeysGetter(private val allowedKeyLabels: Array<String>) : FeatureExtractor  {
+class NearestKeysGetter(private val allowedKeyLabels: Array<String>,
+                        grid: KeyboardGrid) : FeatureExtractor  {
     private val nkl: Array<IntArray>
-    private val allowedKeys: List<KeyboardKey.CharacterKey>
-    private val keyboardWidth: Int
-    private val keyboardHeight: Int
+    private val allowedKeys: List<KeyboardKey.CharacterKey> =
+        grid.keys.filterIsInstance<KeyboardKey.CharacterKey>()
+            .filter { it.label in allowedKeyLabels }
+    private val keyboardWidth: Int = grid.width
+    private val keyboardHeight: Int = grid.height
 
     init {
-        val grid = getDefaultGrid()
-        keyboardWidth = grid.width
-        keyboardHeight = grid.height
-
-        allowedKeys = grid.keys.filterIsInstance<KeyboardKey.CharacterKey>()
-            .filter { it.label in allowedKeyLabels }
         nkl = createNearestKeysArray(allowedKeys)
     }
 
