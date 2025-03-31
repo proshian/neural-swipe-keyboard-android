@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.executorch_neuroswipe_example_1"
+    namespace = "com.example.neuralSwipeKeyboardProject"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.executorch_neuroswipe_example_1"
+        applicationId = "com.example.neuralSwipeKeyboardProject"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
