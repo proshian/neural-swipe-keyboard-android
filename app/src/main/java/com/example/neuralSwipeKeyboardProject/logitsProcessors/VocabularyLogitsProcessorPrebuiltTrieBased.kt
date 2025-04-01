@@ -25,7 +25,7 @@ class VocabularyLogitsProcessorPrebuiltTrieBased (
 
     private suspend fun initializeTrie() {
         try {
-            val trieRoot = context.assets.open(trieAssetPath).use { deserialize<Int>(it) }
+            root.set(context.assets.open(trieAssetPath).use { deserialize<Int>(it) })
         } catch(e: Exception) {
             Log.e("VocabularyLogitsProcessor", "Trie initialization failed", e)
             throw e
