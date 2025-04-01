@@ -15,6 +15,8 @@ import com.example.neuralSwipeKeyboardProject.keyboardGrid.KeyboardGridReader
 import com.example.neuralSwipeKeyboardProject.assertUtils.AssetUtils
 import com.example.neuralSwipeKeyboardProject.decodingAlgorithms.BeamSearch
 import com.example.neuralSwipeKeyboardProject.logitsProcessors.VocabularyLogitsProcessorPrebuiltTrieBased
+import com.example.neuralSwipeKeyboardProject.logitsProcessors.VocabularyLogitsProcessorTrieBased
+import com.example.neuralSwipeKeyboardProject.logitsProcessors.VocabularyLogitsProcessorMapBased
 import com.example.neuralSwipeKeyboardProject.swipePointFeaturesExtraction.TrajFeatsGetter
 import com.example.neuralSwipeKeyboardProject.swipePointFeaturesExtraction.NearestKeysGetter
 import com.example.neuralSwipeKeyboardProject.swipePointFeaturesExtraction.FeatureExtractorAggregator
@@ -46,9 +48,9 @@ class NeuralIME : InputMethodService() {
 
             val subwordTokenizer = RuSubwordTokenizer()
 
-//            val vocab = loadVocabulary("voc.txt")
-//            val maxTokenId = 34  // num_classes - 1
-//            val logitsProcessor = VocabularyLogitsProcessorV2(subwordTokenizer, vocab, maxTokenId)
+            val vocab = loadVocabulary("voc.txt")
+//            val logitsProcessor = VocabularyLogitsProcessorMapBased(subwordTokenizer, vocab)
+//            val logitsProcessor = VocabularyLogitsProcessorTrieBased(subwordTokenizer, vocab)
 
             val logitsProcessor = VocabularyLogitsProcessorPrebuiltTrieBased(
                 applicationContext, "trie.ser")

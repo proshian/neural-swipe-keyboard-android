@@ -2,15 +2,25 @@ package com.example.neuralSwipeKeyboardProject.logitsProcessors
 
 import android.util.Log
 import com.example.neuralSwipeKeyboardProject.tokenizers.RuSubwordTokenizer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicReference
 
 class VocabularyLogitsProcessorMapBased(
     private val tokenizer: RuSubwordTokenizer,
     private val vocab: List<String>,
 ) : LogitsProcessor() {
 
-    private val prefixToAllowedIds: Map<List<Int>, Set<Int>> = createPrefixToAllowedIds()
+    private val prefixToAllowedIds: AtomicReference<Map<List<Int>, Set<Int>>?> = AtomicReference(null)
 
-    private fun createPrefixToAllowedIds(): Map<List<Int>, Set<Int>> {
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            prefixToAllowedIds.set(createPrefixToAllowedIds())
+        }
+    }
+
+    private suspend fun createPrefixToAllowedIds(): Map<List<Int>, Set<Int>> {
         val map = mutableMapOf<List<Int>, MutableSet<Int>>()
         vocab.forEach { word ->
             val tokens = tokenizer.tokenize(word).toList()
@@ -25,9 +35,11 @@ class VocabularyLogitsProcessorMapBased(
     }
 
     override fun process(logits: FloatArray, inputIds: List<Int>): FloatArray {
-        val allowedIds = prefixToAllowedIds[inputIds] ?: run {
+        val resolvedPrefixToAllowedIds = prefixToAllowedIds.get() ?: return logits
+
+        val allowedIds = resolvedPrefixToAllowedIds[inputIds] ?: run {
             Log.w("", "empty allowed ids for prefix ${inputIds.joinToString(", ")}")
-            emptySet<Int>()
+            return logits
         }
         (logits.indices)
             .filterNot { it in allowedIds }

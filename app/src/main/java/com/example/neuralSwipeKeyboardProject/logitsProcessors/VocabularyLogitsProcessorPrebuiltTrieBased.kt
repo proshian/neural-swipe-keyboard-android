@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.example.trie.ImmutableNode
 import com.example.trie.deserialize
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,9 +32,9 @@ class VocabularyLogitsProcessorPrebuiltTrieBased (
     }
 
     override fun process(logits: FloatArray, inputIds: List<Int>): FloatArray {
-        val currentRoot = root.get() ?: return logits
+        val resolvedRoot = root.get() ?: return logits
 
-        val allowedIds = traverseTrie(currentRoot, inputIds)
+        val allowedIds = traverseTrie(resolvedRoot, inputIds)
 
         return logits.apply {
             indices.filterNot { it in allowedIds }
