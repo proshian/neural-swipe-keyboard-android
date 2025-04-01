@@ -37,7 +37,7 @@ data class KeyboardGrid(val width: Int, val height: Int, val keys: List<Keyboard
 
 
 object KeyboardKeySerializer : JsonContentPolymorphicSerializer<KeyboardKey>(KeyboardKey::class) {
-    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<out KeyboardKey> {
+    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<KeyboardKey> {
         return when {
             "label" in element.jsonObject -> KeyboardKey.CharacterKey.serializer()
             "action" in element.jsonObject -> KeyboardKey.ActionKey.serializer()

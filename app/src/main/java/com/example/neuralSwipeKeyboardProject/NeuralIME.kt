@@ -14,9 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.neuralSwipeKeyboardProject.keyboardGrid.KeyboardGridReader
 import com.example.neuralSwipeKeyboardProject.assertUtils.AssetUtils
 import com.example.neuralSwipeKeyboardProject.decodingAlgorithms.BeamSearch
-//import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.VocabularyLogitsProcessorV3
-//import com.example.executorch_neuroswipe_example_1.decodingAlgorithms.VocabularyLogitsProcessorV4
-import com.example.neuralSwipeKeyboardProject.logitsProcessors.VocabularyLogitsProcessorFromPrebuiltTrieV2
+import com.example.neuralSwipeKeyboardProject.logitsProcessors.VocabularyLogitsProcessorPrebuiltTrieBased
 import com.example.neuralSwipeKeyboardProject.swipePointFeaturesExtraction.TrajFeatsGetter
 import com.example.neuralSwipeKeyboardProject.swipePointFeaturesExtraction.NearestKeysGetter
 import com.example.neuralSwipeKeyboardProject.swipePointFeaturesExtraction.FeatureExtractorAggregator
@@ -48,37 +46,27 @@ class NeuralIME : InputMethodService() {
 
             val subwordTokenizer = RuSubwordTokenizer()
 
-            val vocab = loadVocabulary("voc.txt")
-            val maxTokenId = 34  // num_classes - 1
-
+//            val vocab = loadVocabulary("voc.txt")
+//            val maxTokenId = 34  // num_classes - 1
 //            val logitsProcessor = VocabularyLogitsProcessorV2(subwordTokenizer, vocab, maxTokenId)
-            val logitsProcessor = VocabularyLogitsProcessorFromPrebuiltTrieV2(
-                subwordTokenizer, applicationContext, maxTokenId, "trie.ser")
 
-            val sosToken = subwordTokenizer.tokenToId["<sos>"] ?: throw IllegalStateException(
-                "subwordTokenizer doesn't have a <sos> token")
-            val eosToken = subwordTokenizer.tokenToId["<eos>"] ?: throw IllegalStateException(
-                "subwordTokenizer doesn't have a <eos> token")
+            val logitsProcessor = VocabularyLogitsProcessorPrebuiltTrieBased(
+                applicationContext, "trie.ser")
 
 
             val decodingAlgorithm = BeamSearch(
                 encoderDecoderModule,
-                sosToken = sosToken,
-                eosToken = eosToken,
+                sosToken = subwordTokenizer.sosTokenId,
+                eosToken = subwordTokenizer.eosTokenId,
                 maxSteps = 35,
                 beamSize = 5,
                 logitsProcessor=logitsProcessor
             )
 
 
-            val allowedKeyLabels = arrayOf(
-                "а", "б", "в", "г", "д", "е", "ë", "ж", "з", "и", "й",
-                "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
-                "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"
-            )
             val keyboardGridReader = KeyboardGridReader(this)
             val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets("${currentGridName}.json")
-            val nearestKeysGetter = NearestKeysGetter(allowedKeyLabels, keyboardGrid)
+            val nearestKeysGetter = NearestKeysGetter(keyboardGrid)
             val trajFeatsGetter = TrajFeatsGetter()
 
             val coordFeatsAndNearestKeyGetter = FeatureExtractorAggregator(

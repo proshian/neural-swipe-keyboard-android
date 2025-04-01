@@ -3,7 +3,7 @@ package com.example.neuralSwipeKeyboardProject.logitsProcessors
 import android.util.Log
 import com.example.neuralSwipeKeyboardProject.tokenizers.RuSubwordTokenizer
 
-class VocabularyLogitsProcessor(
+class VocabularyLogitsProcessorMapBased(
     private val tokenizer: RuSubwordTokenizer,
     private val vocab: List<String>,
 ) : LogitsProcessor() {

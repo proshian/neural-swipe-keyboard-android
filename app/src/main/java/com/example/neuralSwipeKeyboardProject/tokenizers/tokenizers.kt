@@ -67,6 +67,11 @@ class RuSubwordTokenizer: TokenMapsContainer, StringTokenizer  {
    override fun detokenize(ids: IntArray): String {
       return ids.filter{it < 33 }.map{ idToToken[it] }.joinToString(separator = "")
    }
+
+    public val sosTokenId = tokenToId["<sos>"] ?: throw IllegalStateException(
+        "subwordTokenizer doesn't have a <sos> token")
+    public val eosTokenId = tokenToId["<eos>"] ?: throw IllegalStateException(
+        "subwordTokenizer doesn't have a <eos> token")
 }
 
 
