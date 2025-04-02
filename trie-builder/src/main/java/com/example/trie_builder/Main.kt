@@ -9,7 +9,7 @@ import java.io.File
 
 fun main() {
     val tokenizer = RuSubwordTokenizer()
-    val vocab = File("trie-builder/voc.txt").readLines()
+    val vocab = File("app/src/main/assets/voc.txt").readLines()
 
 
     val tokenizedVocab = vocab.map { word ->

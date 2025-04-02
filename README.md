@@ -53,7 +53,9 @@ The swipe decoding is done by [NeuralSwipeTypingDecoder](./app/src/main/java/com
 - [ ] Instruction on how to generate a synthetic dataset, train and integrate models for new languages and new keyboard layouts
 - [ ] UI Design enhancement
 - [ ] Add swipe trail visualization
-- [ ] Reading tokenizers from json
+- [ ] Reading tokenizers from json via serializable
+- [ ] Move tokenizers to a separate module
+- [ ] Delete tokenizers duplicate from the trie-builder
 - [ ] JSON configs that bound all swipe-typing-related entities states. Example:
   ```json
   {
