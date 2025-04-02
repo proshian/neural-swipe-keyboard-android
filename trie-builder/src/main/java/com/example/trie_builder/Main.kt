@@ -1,6 +1,8 @@
 package com.example.trie_builder
 
-import com.example.trie.* // From your shared 'trie' module
+import com.example.trie.serializeImmutableTrie
+import com.example.trie.convertToImmutable
+import com.example.trie.buildMutableTrie
 import com.example.trie_builder.tokenizers.RuSubwordTokenizer
 import java.io.FileOutputStream
 import java.io.File
@@ -18,7 +20,7 @@ fun main() {
     val immutableTrie = convertToImmutable(trie)
 
     FileOutputStream("app/src/main/assets/trie.ser").use { output ->
-        serialize(immutableTrie, output)
+        serializeImmutableTrie(immutableTrie, output)
     }
     println("Trie built successfully!")
 }

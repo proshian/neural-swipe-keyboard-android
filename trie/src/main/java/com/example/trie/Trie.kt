@@ -8,14 +8,16 @@ import java.io.InputStream
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 
-sealed class Node<T> : Serializable
+sealed class Node<T> : Serializable {
+    abstract val children: Map<T, Node<T>>
+}
 
 class MutableNode<T : Serializable>(
-    val children: MutableMap<T, MutableNode<T>> = mutableMapOf()
+    override val children: MutableMap<T, MutableNode<T>> = mutableMapOf()
 ) : Node<T>()
 
 class ImmutableNode<T : Serializable>(
-    val children: ImmutableMap<T, ImmutableNode<T>>
+    override val children: ImmutableMap<T, ImmutableNode<T>>
 ) : Node<T>(), Serializable {
     private fun writeObject(out: ObjectOutputStream) {
         out.writeObject(children.toMap()) // Convert to regular Map for serialization
@@ -50,11 +52,35 @@ fun <T : Serializable> convertToImmutable(mutableRoot: MutableNode<T>): Immutabl
     return convertNode(mutableRoot)
 }
 
-fun <T : Serializable> serialize(root: ImmutableNode<T>, outputStream: OutputStream) {
+/**
+ * Traverses the trie following the given token sequence and returns allowed continuations.
+ *
+ * @param root The root node of the trie
+ * @param inputIds Sequence of tokens representing the prefix path to traverse
+ * @return Set of allowed next tokens if the `inputIds` prefix exists in the trie, `null` otherwise
+ *
+ * @example
+ * ```
+ * // Given trie containing words: ["hello", "hi"]
+ * traverseTrie(trieRoot, listOf("h", "e")) // Returns setOf("l")
+ * traverseTrie(trieRoot, listOf("h"))      // Returns setOf("e", "i")
+ * traverseTrie(trieRoot, listOf("ha"))      // Returns null
+ * ```
+ */
+fun <T : Serializable> traverseTrie(root: Node<T>, inputIds: List<T>): Set<T>? {
+    var currentNode = root
+    for (token in inputIds) {
+        currentNode = currentNode.children[token] ?: return null
+    }
+    return currentNode.children.keys
+}
+
+
+fun <T : Serializable> serializeImmutableTrie(root: ImmutableNode<T>, outputStream: OutputStream) {
     ObjectOutputStream(outputStream).use { it.writeObject(root) }
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Serializable> deserialize(inputStream: InputStream): ImmutableNode<T> {
+fun <T : Serializable> deserializeImmutableTrie(inputStream: InputStream): ImmutableNode<T> {
     return ObjectInputStream(inputStream).use { it.readObject() as ImmutableNode<T> }
 }

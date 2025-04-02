@@ -109,7 +109,6 @@ class NeuralIME : InputMethodService() {
         }
 
 
-
         candidatesRecyclerView = RecyclerView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -146,7 +145,6 @@ class NeuralIME : InputMethodService() {
         }
 
         return rootView
-
     }
 
     override fun onStartInputView(attribute: EditorInfo?, restarting: Boolean) {
