@@ -16,6 +16,8 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * With the Yandex Cup vocabulary, consumes approximately 170 MB,
  * but has an overhead during deserialization.
+ *
+ * Deserializes on trie.ser that is created by running `trie-builder/src/main/java/com/example/trie_builder/Main.kt`
  */
 class VocabularyLogitsProcessorPrebuiltTrieBased (
     private val context: Context,

@@ -48,7 +48,7 @@ class NeuralIME : InputMethodService() {
 
             val subwordTokenizer = RuSubwordTokenizer()
 
-            val vocab = loadVocabulary("voc.txt")
+//            val vocab = loadVocabulary("voc.txt")
 //            val logitsProcessor = VocabularyLogitsProcessorMapBased(subwordTokenizer, vocab)
 //            val logitsProcessor = VocabularyLogitsProcessorTrieBased(subwordTokenizer, vocab)
 
