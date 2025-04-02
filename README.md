@@ -1,6 +1,17 @@
-# Android inference for neural-glide-typing models
+# Neural Swipe Typing Demo (Android)
 
-1. Use executorch_export.ipynb in neural-glide-typing project to create xnnpack_my_nearest_feats.pte 
+**Proof-of-concept implementation** demonstrating how to integrate a neural swipe typing model into an Android keyboard. 
+
+> [!Note]
+> This is not designed as a production keyboard, but as a reference implementation for developers.
+
+
+## Why This Exists
+Most keyboard apps from large tech companies log your swipe gestures to their servers. While open-source keyboards protect your privacy, they often can't match the swipe-typing accuracy of proprietary offerings. This gap exists because proprietary keyboards have been using neural networks for this task ([1](https://research.google/blog/the-machine-intelligence-behind-gboard/), [2](https://www.grammarly.com/blog/engineering/deep-learning-swipe-typing/), [3](https://yandex.ru/company/news/02-06-23)) since 2015  when [Google demonstrated that neural networks improve swipe typing decoding](https://ieeexplore.ieee.org/document/7178336). Developing these models requires ML expertise that may be lacking in small teams. This project aims at helping mobile developers building privacy-focused keyboards.
+
+
+## Quick Start
+1. Use [executorch_export.ipynb in neural-glide-typing project](https://github.com/proshian/neural-swipe-typing/blob/executorch-investigation/src/executorch_export.ipynb) to create xnnpack_my_nearest_feats.pte.
 2. Move xnnpack_my_nearest_feats.pte to app/src/main/assets/xnnpack_my_nearest_feats.pte
 3. Obtain prebuilt executorch.aar as below:
     ```shell
@@ -9,4 +20,4 @@
     mkdir -p app/libs
     curl https://ossci-android.s3.amazonaws.com/executorch/release/v0.5.0-rc3/executorch.aar -o app/libs/executorch.aar
     ```
-4. Build this android app :)
+4. Build this android app with Android Studio
