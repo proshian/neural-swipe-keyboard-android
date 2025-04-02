@@ -11,8 +11,9 @@ Most keyboard apps from large tech companies log your swipe gestures to their se
 
 
 ## Quick Start
-1. Use [executorch_export.ipynb in neural-glide-typing project](https://github.com/proshian/neural-swipe-typing/blob/executorch-investigation/src/executorch_export.ipynb) to create xnnpack_my_nearest_feats.pte.
-2. Move xnnpack_my_nearest_feats.pte to app/src/main/assets/xnnpack_my_nearest_feats.pte
+1. Obtain xnnpack_my_nearest_feats.pte
+    * Use [executorch_export.ipynb in neural-glide-typing project](https://github.com/proshian/neural-swipe-typing/blob/executorch-investigation/src/executorch_export.ipynb) to create xnnpack_my_nearest_feats.pte.
+    * Move `xnnpack_my_nearest_feats.pte` to `app/src/main/assets/xnnpack_my_nearest_feats.pte`
 3. Obtain prebuilt executorch.aar as below:
     ```shell
     # The ink is taken from official documentation: 
@@ -21,3 +22,29 @@ Most keyboard apps from large tech companies log your swipe gestures to their se
     curl https://ossci-android.s3.amazonaws.com/executorch/release/v0.5.0-rc3/executorch.aar -o app/libs/executorch.aar
     ```
 4. Build this android app with Android Studio
+
+
+Here's the enhanced README section with your TODOs incorporated naturally into the project description:
+
+
+## Upcoming Improvements
+- [ ] Most importantely - pretrained models for English and other languages
+- [ ] Instruction on how to train and integrate models for new languages and new keyboard layouts 
+- [ ] UI Design enhancement
+- [ ] Add swipe trail visualization
+- [ ] Reading tokenizers from json
+- [ ] JSON configs that bound all swipe-typing-related entities states. Example:
+  ```json
+  {
+    "feature_extractor": "traj+nearest_keys",
+    "subword_tokenizer": "assets/ru_tokenizer.json",
+    "keyboard_keys_tokenizer": "assets/ru_keyboard_tokenizer.json",
+    "grid": "assets/grids/default.json",
+    "model": "assets/swipe_model.pte"
+  }
+  ```
+- [ ] Support for multiple keyboard layouts
+
+
+
+## Contributions welcome!
