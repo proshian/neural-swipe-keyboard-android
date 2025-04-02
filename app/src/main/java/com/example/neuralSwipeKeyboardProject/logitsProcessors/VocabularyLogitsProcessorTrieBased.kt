@@ -10,6 +10,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 
+
+/**
+ * Builds a mutable trie.
+ *
+ * With the Yandex Cup vocabulary, consumes approximately 210 MB.
+ */
 class VocabularyLogitsProcessorTrieBased(
     private val tokenizer: RuSubwordTokenizer,
     private val vocab: List<String>,

@@ -10,6 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 
+
+/**
+ * Loads a prebuilt serialized immutable trie.
+ *
+ * With the Yandex Cup vocabulary, consumes approximately 170 MB,
+ * but has an overhead during deserialization.
+ */
 class VocabularyLogitsProcessorPrebuiltTrieBased (
     private val context: Context,
     private val trieAssetPath: String

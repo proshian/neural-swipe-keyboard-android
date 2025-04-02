@@ -7,6 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 
+/**
+ * With the Yandex Cup vocabulary, consumes approximately 290 MB.
+ */
 class VocabularyLogitsProcessorMapBased(
     private val tokenizer: RuSubwordTokenizer,
     private val vocab: List<String>,
