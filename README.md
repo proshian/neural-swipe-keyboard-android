@@ -10,6 +10,7 @@ The models are trained in a separate [neural-swipe-typing repository](https://gi
 
 
 ## Demo
+https://github.com/user-attachments/assets/c8375b80-4ac3-4b2a-9423-933cd321a546
 
 
 ## Why This Exists
