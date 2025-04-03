@@ -2,6 +2,8 @@
 
 **Proof-of-concept implementation** demonstrating how to integrate a neural swipe typing model into an Android keyboard. 
 
+The models are trained in a separate [neural-swipe-typing repository](https://github.com/proshian/neural-swipe-typing)
+
 > [!Note]
 > This is not designed as a production keyboard, but as a reference implementation for developers.
 
@@ -14,17 +16,17 @@ Most keyboard apps from large tech companies log your swipe gestures to their se
 
 
 ## State of the project
-Working swipe-typing demo app for Russian only (due to the lack of datasets for other languages).
+Functional swipe-typing demo app
 
-It is possible generate synthetic data (the easiest way is to use minimal jerk trajectory with noise as described in [this](https://www.tandfonline.com/doi/full/10.1080/07370024.2016.1215922) paper). This is the main current goal
-
-
-The app was tested on several devices with no crashes. However, if a crash happens it may be due to RAM restrictions of a device. The app currently uses a huge trie (~170Mb) (the vocabulary contains over 0.5 million Russian words). Some devices don't allow apps that consume over 256 Mb of RAM. Probably the vocabulary has to be sighnificatly cut.
+Currently only Russian is supported due to the lack of datasets for other languages. It is possible generate synthetic data (the easiest way is to follow [this](https://www.tandfonline.com/doi/full/10.1080/07370024.2016.1215922) paper). Expanding language support is is the top priority development goal
 
 
-## Where is the transformation from swipe into sorted list of words done?
+The app is stable on tested devices. However, if a crash happens it may be due to RAM restrictions of a device. The app currently uses a huge trie (~170Mb) (the vocabulary contains over 0.5 million Russian words). Some devices don't allow apps that consume over 256 Mb of RAM. Probably the vocabulary has to be sighnificatly cut.
 
-The swipe decoding is done by [NeuralSwipeTypingDecoder](./app/src/main/java/com/example/neuralSwipeKeyboardProject/swipeTypingDecoders/NeuralSwipeTypingDecoder.kt) class. That's the component that you need in your keyboard to decode the swipe typing gestures. See its documentation for the details
+
+## Where does swipe-to-words transformation happen?
+
+The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDecoder](./app/src/main/java/com/example/neuralSwipeKeyboardProject/swipeTypingDecoders/NeuralSwipeTypingDecoder.kt) class. This is the essential component you would integrate into a keyboard implementation. See its documentation for the details
 
 
 ## Quick Start
@@ -49,7 +51,7 @@ The swipe decoding is done by [NeuralSwipeTypingDecoder](./app/src/main/java/com
 
 
 ## Upcoming Improvements
-- [ ] Most importantely - create and add models for English and other languages
+- [ ] **Add support for more languages including English**
 - [ ] Instruction on how to generate a synthetic dataset, train and integrate models for new languages and new keyboard layouts
 - [ ] UI Design enhancement
 - [ ] Add swipe trail visualization
