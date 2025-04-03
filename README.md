@@ -12,6 +12,8 @@ The models are trained in a separate [neural-swipe-typing repository](https://gi
 ## Demo
 https://github.com/user-attachments/assets/c8375b80-4ac3-4b2a-9423-933cd321a546
 
+## Download
+A pre-built APK is available in the [Releases section](https://github.com/proshian/neural-swipe-keyboard-android/releases) of this repository.
 
 ## Why This Exists
 Most keyboard apps from large tech companies log your swipe gestures to their servers. While open-source keyboards protect your privacy, they often can't match the swipe-typing accuracy of proprietary offerings. This gap exists because proprietary keyboards have been using neural networks for this task ([1](https://research.google/blog/the-machine-intelligence-behind-gboard/), [2](https://www.grammarly.com/blog/engineering/deep-learning-swipe-typing/), [3](https://yandex.ru/company/news/02-06-23)) since 2015,  when [Google demonstrated that neural networks improve swipe typing decoding](https://ieeexplore.ieee.org/document/7178336). Developing these models requires ML expertise that may be lacking in small teams. This project aims to help mobile developers build privacy-focused keyboards.
