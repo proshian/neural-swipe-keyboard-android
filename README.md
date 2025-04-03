@@ -1,13 +1,11 @@
 # Neural Swipe Typing Android Demo
 
-**Proof-of-concept implementation** demonstrating how to integrate a neural swipe typing model into an Android keyboard. 
-This project is a reference implementation for developers who want to build a privacy-focused keyboard app with swipe typing capabilities.
+**Proof-of-concept implementation** demonstrating how to integrate a neural swipe typing model into an Android keyboard. This project serves as an example for developers who want to build privacy-focused keyboard apps with swipe typing capabilities.
 
 The models are trained in a separate [neural-swipe-typing repository](https://github.com/proshian/neural-swipe-typing).
 
 > [!Note]
-> This is not designed as a production keyboard but as a reference implementation for developers.
-
+> The keyboard supports only swipe typing and is not suitable for daily use — you cannot type individual symbols or even press the enter button. This is intentional: the project is merely to demonstrate an example of how to integrate a neural swipe typing model into an Android keyboard. All other nuances of keyboard development are out of scope for this project. 
 
 ## Demo
 https://github.com/user-attachments/assets/c8375b80-4ac3-4b2a-9423-933cd321a546
@@ -20,9 +18,6 @@ Most keyboard apps from large tech companies log your swipe gestures to their se
 
 ## State of the Project  
 A functional swipe-typing demo app is currently available.
-
-> [!Note]
-> The keyboard supports only swipe typing and is not suitable for daily use—you cannot type individual symbols or even press the enter button. This is intentional: the project is merely to demonstrate an example of how to integrate a neural swipe typing model into an Android keyboard. All other nuances of keyboard development are out of scope for this project. 
 
 Only Russian is supported at the moment due to the lack of datasets for other languages. It is possible to generate synthetic data (the easiest way is to follow [this paper](https://www.tandfonline.com/doi/full/10.1080/07370024.2016.1215922)). Expanding language support is the top development priority.  
 
