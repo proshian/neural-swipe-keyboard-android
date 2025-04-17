@@ -24,7 +24,7 @@ Only Russian is supported at the moment due to the lack of datasets for other la
 The app is stable on tested devices. However, crashes may occur due to RAM limitations on some devices. The app currently uses a large trie (~170 MB) (the vocabulary contains over 0.5 million Russian words). Some devices restrict apps from consuming more than 256 MB of RAM. The vocabulary probably needs to be significantly reduced.  
 
 ## Where Does Swipe-to-Words Transformation Happen?  
-The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDecoder](./app/src/main/java/com/example/neuralSwipeKeyboardProject/swipeTypingDecoders/NeuralSwipeTypingDecoder.kt) class. This is the essential component you would integrate into a keyboard implementation. See its documentation for details.  
+The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDecoder](./neuralSwipeTyping/src/main/java/io/github/proshian/neuralswipetyping/swipeTypingDecoders/NeuralSwipeTypingDecoder.kt) class. This is the essential component you would integrate into a keyboard implementation. See its documentation for details.  
 
 ## Quick Start
 1. Obtain assets
