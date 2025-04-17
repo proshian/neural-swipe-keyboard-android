@@ -6,8 +6,8 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.MotionEvent
 import android.view.View
-import com.example.neuralSwipeKeyboardProject.keyboardGrid.KeyboardGrid
-import com.example.neuralSwipeKeyboardProject.keyboardGrid.KeyboardKey
+import io.github.proshian.neuralswipetyping.keyboardGrid.KeyboardGrid
+import io.github.proshian.neuralswipetyping.keyboardGrid.KeyboardKey
 
 
 

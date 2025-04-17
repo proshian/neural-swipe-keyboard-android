@@ -37,14 +37,8 @@ The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDe
         * Execute trie-builder/src/main/java/com/example/trie_builder/Main.kt
 
     Option 2. Download xnnpack_my_nearest_feats.pte and trie.ser from the assets of the [latest release](https://github.com/proshian/neural-swipe-keyboard-android/releases/) and place them in app/src/main/assets
-2. Obtain prebuilt executorch.aar as below:
-    ```shell
-    # The link is taken from official documentation: 
-    # https://pytorch.org/executorch/0.5/android-prebuilt-library.html#using-prebuilt-libraries
-    mkdir -p app/libs
-    curl https://ossci-android.s3.amazonaws.com/executorch/release/v0.5.0-rc3/executorch.aar -o app/libs/executorch.aar
-    ```
-3. Build this android app with Android Studio
+
+2. Build this android app with Android Studio
 
 ## Upcoming Improvements  
 - [ ] **Add support for more languages, including English**  
