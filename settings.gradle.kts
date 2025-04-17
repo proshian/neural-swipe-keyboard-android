@@ -23,3 +23,4 @@ rootProject.name = "neuralSwipeKeyboardProject"
 include(":app")
 include(":trie")
 include(":trie-builder")
+include(":neuralSwipeTyping")

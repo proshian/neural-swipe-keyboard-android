@@ -45,9 +45,11 @@ android {
 }
 
     dependencies {
+        implementation(libs.executorch.android.v051)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.kotlinx.collections.immutable)
         implementation(project(":trie"))
+        implementation(project(":neuralSwipeTyping"))
         implementation(libs.androidx.core.ktx)
         implementation(libs.androidx.lifecycle.runtime.ktx)
         implementation(libs.androidx.activity.compose)
@@ -64,9 +66,6 @@ android {
         androidTestImplementation(libs.androidx.ui.test.junit4)
         debugImplementation(libs.androidx.ui.tooling)
         debugImplementation(libs.androidx.ui.test.manifest)
-        implementation("com.facebook.soloader:soloader:0.10.5")
-        implementation("com.facebook.fbjni:fbjni:0.5.1")
-        implementation(files("libs/executorch.aar"))
     }
 
 }
