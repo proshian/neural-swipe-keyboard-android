@@ -29,6 +29,7 @@ class VocabularyLogitsProcessorPrebuiltTrieBased (
     init {
         CoroutineScope(Dispatchers.IO).launch {
             initializeTrie()
+            Log.d("VocabularyLogitsProcessor", "Trie initialization complete")
         }
     }
 

@@ -24,7 +24,7 @@ Only Russian is supported at the moment due to the lack of datasets for other la
 The app is stable on tested devices. However, crashes may occur due to RAM limitations on some devices. The app currently uses a large trie (~170 MB) (the vocabulary contains over 0.5 million Russian words). Some devices restrict apps from consuming more than 256 MB of RAM. The vocabulary probably needs to be significantly reduced.  
 
 ## Where Does Swipe-to-Words Transformation Happen?  
-The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDecoder](./app/src/main/java/com/example/neuralSwipeKeyboardProject/swipeTypingDecoders/NeuralSwipeTypingDecoder.kt) class. This is the essential component you would integrate into a keyboard implementation. See its documentation for details.  
+The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDecoder](./neuralSwipeTyping/src/main/java/io/github/proshian/neuralswipetyping/swipeTypingDecoders/NeuralSwipeTypingDecoder.kt) class. This is the essential component you would integrate into a keyboard implementation. See its documentation for details.  
 
 ## Quick Start
 1. Obtain assets
@@ -41,23 +41,21 @@ The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDe
 2. Build this android app with Android Studio
 
 ## Upcoming Improvements  
-- [ ] **Add support for more languages, including English**  
-- [ ] Instructions on generating synthetic datasets, training, and integrating models for new languages and keyboard layouts  
-- [ ] UI design enhancements  
-- [ ] Swipe trail visualization  
+
+neuralSwipeTyping library related:
+- [ ] **Add support for more languages, including English**
+- [ ] Instructions on generating synthetic datasets, training, and integrating models for new languages and keyboard layouts
 - [ ] Reading tokenizers from JSON via serializable  
-- [ ] Moving tokenizers to a separate module  
-- [ ] Removing duplicate tokenizers from the trie-builder  
-- [ ] JSON configs to define swipe-typing-related entities. Example:  
-  ```json  
-  {  
-    "feature_extractor": "traj+nearest_keys",  
-    "subword_tokenizer": "assets/ru_tokenizer.json",  
-    "keyboard_keys_tokenizer": "assets/ru_keyboard_tokenizer.json",  
-    "grid": "assets/grids/default.json",  
-    "model": "assets/swipe_model.pte"  
-  }  
-  ```  
-- [ ] Support for multiple keyboard layouts  
+- [ ] Moving tokenizers to a separate module
+- [ ] Publishing as an .arr library
+
+Demo app related:
+- [ ] Keyboard design
+- [ ] Swipe trail visualization
+- [ ] Support for multiple keyboard layouts
+
+Other:
+- [ ] Removing duplicate tokenizers from the trie-builder
+
 
 ## Contributions Welcome!
