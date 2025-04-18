@@ -41,23 +41,21 @@ The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDe
 2. Build this android app with Android Studio
 
 ## Upcoming Improvements  
-- [ ] **Add support for more languages, including English**  
-- [ ] Instructions on generating synthetic datasets, training, and integrating models for new languages and keyboard layouts  
-- [ ] UI design enhancements  
-- [ ] Swipe trail visualization  
+
+neuralSwipeTyping library related:
+- [ ] **Add support for more languages, including English**
+- [ ] Instructions on generating synthetic datasets, training, and integrating models for new languages and keyboard layouts
 - [ ] Reading tokenizers from JSON via serializable  
-- [ ] Moving tokenizers to a separate module  
-- [ ] Removing duplicate tokenizers from the trie-builder  
-- [ ] JSON configs to define swipe-typing-related entities. Example:  
-  ```json  
-  {  
-    "feature_extractor": "traj+nearest_keys",  
-    "subword_tokenizer": "assets/ru_tokenizer.json",  
-    "keyboard_keys_tokenizer": "assets/ru_keyboard_tokenizer.json",  
-    "grid": "assets/grids/default.json",  
-    "model": "assets/swipe_model.pte"  
-  }  
-  ```  
-- [ ] Support for multiple keyboard layouts  
+- [ ] Moving tokenizers to a separate module
+- [ ] Publishing as an .arr library
+
+Demo app related:
+- [ ] Keyboard design
+- [ ] Swipe trail visualization
+- [ ] Support for multiple keyboard layouts
+
+Other:
+- [ ] Removing duplicate tokenizers from the trie-builder
+
 
 ## Contributions Welcome!
