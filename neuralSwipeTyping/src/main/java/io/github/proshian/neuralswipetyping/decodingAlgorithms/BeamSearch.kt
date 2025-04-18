@@ -56,7 +56,7 @@ fun beamSearch(
 
     val finalHypotheses = mutableListOf<Hypothesis>()
 
-    val emptyPollMsg = "Unexpected null hypothesis in partialHypotheses priority queue. " +
+    val emptyPollMsg = "Unexpected state: partialHypotheses is empty." +
             "PartialHypotheses should never be empty here due to the loop condition"
 
     while (partialHypotheses.isNotEmpty()) {
@@ -64,12 +64,6 @@ fun beamSearch(
             ?: error(emptyPollMsg)
 
         val currentTokens = currentHypothesis.tokens
-        // "-1" to account for the sosToken.
-        if (currentTokens.last() == eosToken || currentTokens.size - 1 >= maxSteps) {
-            finalHypotheses.add(currentHypothesis)
-            continue
-        }
-
         val decoderInput = Tensor.fromBlob(
             currentTokens.toIntArray(),
             longArrayOf(currentTokens.size.toLong(), 1)
@@ -103,6 +97,7 @@ fun beamSearch(
             val newTokens = currentTokens + tokenId
             val newHypothesis = Hypothesis(newScore, newTokens)
 
+            // "-1" to account for the sosToken.
             if (tokenId == eosToken || newTokens.size - 1 >= maxSteps) {
                 finalHypotheses.add(newHypothesis)
             } else {
