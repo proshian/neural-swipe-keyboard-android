@@ -56,12 +56,15 @@ fun beamSearch(
 
     val finalHypotheses = mutableListOf<Hypothesis>()
 
+    val emptyPollMsg = "Unexpected null hypothesis in partialHypotheses priority queue. " +
+            "PartialHypotheses should never be empty here due to the loop condition"
+
     while (partialHypotheses.isNotEmpty()) {
         val currentHypothesis = partialHypotheses.poll()
-            ?: throw IllegalStateException(
-                "Unexpected null hypothesis in partialHypotheses priority queue")
+            ?: error(emptyPollMsg)
 
         val currentTokens = currentHypothesis.tokens
+        // "-1" to account for the sosToken.
         if (currentTokens.last() == eosToken || currentTokens.size - 1 >= maxSteps) {
             finalHypotheses.add(currentHypothesis)
             continue
@@ -72,24 +75,24 @@ fun beamSearch(
             longArrayOf(currentTokens.size.toLong(), 1)
         )
 
-        val decodedEValue = module.execute(
-            "decode",
-            EValue.from(decoderInput),
-            encoded
-        )[0]
-        val allLogitsTensor = decodedEValue.toTensor()
+        val allLogitsTensor = module
+            .execute("decode", EValue.from(decoderInput), encoded)
+            .single()
+            .toTensor()
         val nextTokenLogits = getLastStepLogits(allLogitsTensor)
-        val processedLogits = logitsProcessor?.process(nextTokenLogits, currentTokens) ?: nextTokenLogits
+        val processedLogits = logitsProcessor?.process(nextTokenLogits, currentTokens)
+            ?: nextTokenLogits
 
 
         val logProbs = logSoftmax(processedLogits)
-        val topK = logProbs.withIndex()
+        val topK = logProbs
+            // logProb = -inf <=> prob = 0. We don't want to consider impossible hypotheses.
+            .filter { it != Float.NEGATIVE_INFINITY }
+            .withIndex()
             .sortedByDescending { it.value }
             .take(beamSize)
 
-        for ((tokenIndex, tokenLogProb) in topK) {
-            if (tokenLogProb == Float.NEGATIVE_INFINITY) continue
-
+        for ((tokenId, tokenLogProb) in topK) {
             // Calculate new score with length normalization
             val currentLength = currentTokens.size.toFloat()
             val denormScore = currentHypothesis.score * currentLength.pow(normalizationFactor)
@@ -97,10 +100,10 @@ fun beamSearch(
             val newLength = currentLength + 1
             val newScore = newDenormScore / newLength.pow(normalizationFactor)
 
-            val newTokens = currentTokens + tokenIndex
+            val newTokens = currentTokens + tokenId
             val newHypothesis = Hypothesis(newScore, newTokens)
 
-            if (tokenIndex == eosToken || newTokens.size - 1 >= maxSteps) {
+            if (tokenId == eosToken || newTokens.size - 1 >= maxSteps) {
                 finalHypotheses.add(newHypothesis)
             } else {
                 partialHypotheses.add(newHypothesis)
@@ -111,8 +114,7 @@ fun beamSearch(
             val bestHypotheses = mutableListOf<Hypothesis>()
             repeat(beamSize) {
                 if (partialHypotheses.isNotEmpty()) {
-                    bestHypotheses.add(partialHypotheses.poll() ?: throw IllegalStateException(
-                        "Unexpected null hypothesis in partialHypotheses priority queue"))
+                    bestHypotheses.add(partialHypotheses.poll() ?: error(emptyPollMsg))
                 }
             }
             partialHypotheses.clear()
