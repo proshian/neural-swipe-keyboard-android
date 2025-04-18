@@ -86,9 +86,9 @@ fun beamSearch(
 
         val logProbs = logSoftmax(processedLogits)
         val topK = logProbs
-            // logProb = -inf <=> prob = 0. We don't want to consider impossible hypotheses.
-            .filter { it != Float.NEGATIVE_INFINITY }
             .withIndex()
+            // logProb = -inf <=> prob = 0. We don't want to consider impossible hypotheses.
+            .filter { it.value != Float.NEGATIVE_INFINITY }
             .sortedByDescending { it.value }
             .take(beamSize)
 
