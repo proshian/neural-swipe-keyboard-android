@@ -2,9 +2,18 @@ package io.github.proshian.neuralswipetyping.decodingAlgorithms
 
 import org.pytorch.executorch.Tensor
 
-fun getLastStepLogits(allLogitsTensor: Tensor): FloatArray {
-    val seqLen = allLogitsTensor.shape()[0].toInt()
-    val outDim = allLogitsTensor.shape()[2].toInt()
-    val arr = allLogitsTensor.dataAsFloatArray
-    return arr.slice(outDim*(seqLen-1)..<outDim*seqLen).toFloatArray()
+fun getLastStepLogits(allLogitsTensor: Tensor): Array<FloatArray> {
+    val shape = allLogitsTensor.shape()
+    val seqLen = shape[0].toInt()
+    val batchSize = shape[1].toInt()
+    val vocabSize = shape[2].toInt()
+    val data = allLogitsTensor.dataAsFloatArray
+
+    return Array(batchSize) { batchIdx ->
+        FloatArray(vocabSize) { vocabIdx ->
+            data[(seqLen - 1) * batchSize * vocabSize +
+                    batchIdx * vocabSize +
+                    vocabIdx]
+        }
+    }
 }

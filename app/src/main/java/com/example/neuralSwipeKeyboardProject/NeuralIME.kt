@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.proshian.neuralswipetyping.keyboardGrid.KeyboardGridReader
 import com.example.neuralSwipeKeyboardProject.assertUtils.AssetUtils
 import io.github.proshian.neuralswipetyping.decodingAlgorithms.BeamSearch
+import io.github.proshian.neuralswipetyping.decodingAlgorithms.BeamSearchBatched
 import io.github.proshian.neuralswipetyping.logitsProcessors.VocabularyLogitsProcessorPrebuiltTrieBased
 import io.github.proshian.neuralswipetyping.logitsProcessors.VocabularyLogitsProcessorTrieBased
 import io.github.proshian.neuralswipetyping.logitsProcessors.VocabularyLogitsProcessorMapBased
@@ -56,7 +57,7 @@ class NeuralIME : InputMethodService() {
                 applicationContext, "trie.ser")
 
 
-            val decodingAlgorithm = BeamSearch(
+            val decodingAlgorithm = BeamSearchBatched(
                 encoderDecoderModule,
                 sosToken = subwordTokenizer.sosTokenId,
                 eosToken = subwordTokenizer.eosTokenId,

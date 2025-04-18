@@ -73,7 +73,7 @@ fun beamSearch(
             .execute("decode", EValue.from(decoderInput), encoded)
             .single()
             .toTensor()
-        val nextTokenLogits = getLastStepLogits(allLogitsTensor)
+        val nextTokenLogits = getLastStepLogits(allLogitsTensor).single()
         val processedLogits = logitsProcessor?.process(nextTokenLogits, currentTokens)
             ?: nextTokenLogits
 
