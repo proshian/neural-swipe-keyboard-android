@@ -3,7 +3,7 @@ package io.github.proshian.neuralswipetyping.swipeTypingDecoders
 import io.github.proshian.neuralswipetyping.decodingAlgorithms.DecodingAlgorithm
 import io.github.proshian.neuralswipetyping.decodingAlgorithms.ScoredTokenSequenceCandidate
 import org.pytorch.executorch.Module
-import io.github.proshian.neuralswipetyping.tokenizers.StringTokenizer
+import io.github.proshian.neuralswipetyping.tokenizers.WordTokenizer
 import org.pytorch.executorch.EValue
 
 /**
@@ -49,7 +49,7 @@ import org.pytorch.executorch.EValue
 class NeuralSwipeTypingDecoder(
     private val encoderModule: Module,
     private val decodingAlgorithm: DecodingAlgorithm,
-    private val subwordTokenizer: StringTokenizer,
+    private val subwordTokenizer: WordTokenizer,
     private val xytTransform: (IntArray, IntArray, IntArray) -> Array<EValue>
 ) : SwipeTypingDecoder() {
 

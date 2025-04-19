@@ -1,87 +1,61 @@
 package io.github.proshian.neuralswipetyping.tokenizers
 
+import kotlinx.serialization.Serializable
+import android.content.Context
+import kotlinx.serialization.json.Json
+import java.io.InputStream
 
-interface TokenMapsContainer {
-   val idToToken: Map<Int, String>
-   val tokenToId: Map<String, Int>
+
+@Serializable
+sealed interface TokenMapsContainer {
+    val idToToken: Map<Int, String>
+    val tokenToId: Map<String, Int> get() = idToToken.entries.associate { (id, token) -> token to id }
 }
 
-interface StringTokenizer {
-   fun tokenize(str: String): IntArray
-   fun detokenize(ids: IntArray): String
-}
+@Serializable
+class KeyboardTokenizer(
+    override val idToToken: Map<Int, String>
+) : TokenMapsContainer
 
+@Serializable
+class WordTokenizer(
+    override val idToToken: Map<Int, String>,
+    private val specialTokenIdsNullable: IntArray? = null
+) : TokenMapsContainer {
 
+    override val tokenToId: Map<String, Int> by lazy { super.tokenToId }
 
-class RuSubwordTokenizer: TokenMapsContainer, StringTokenizer {
-   override val idToToken = mapOf(
-     0 to "-",
-     1 to "а",
-     2 to "б",
-     3 to "в",
-     4 to "г",
-     5 to "д",
-     6 to "е",
-     7 to "ж",
-     8 to "з",
-     9 to "и",
-     10 to "й",
-     11 to "к",
-     12 to "л",
-     13 to "м",
-     14 to "н",
-     15 to "о",
-     16 to "п",
-     17 to "р",
-     18 to "с",
-     19 to "т",
-     20 to "у",
-     21 to "ф",
-     22 to "х",
-     23 to "ц",
-     24 to "ч",
-     25 to "ш",
-     26 to "щ",
-     27 to "ъ",
-     28 to "ы",
-     29 to "ь",
-     30 to "э",
-     31 to "ю",
-     32 to "я",
-     33 to "<eos>",
-     34 to "<unk>",
-     35 to "<pad>",
-     36 to "<sos>",
-   )
+    public val sosTokenId: Int = tokenToId["<sos>"]
+        ?: throw IllegalArgumentException("<sos> token must be defined")
+    public val eosTokenId: Int = tokenToId["<eos>"]
+        ?: throw IllegalArgumentException("<eos> token must be defined")
+    public val unkTokenId: Int? = tokenToId["<unk>"]
 
-   override val tokenToId = idToToken.map { (k, v) -> v to k }.toMap()
+    private val specialTokenIds = specialTokenIdsNullable ?: intArrayOf(sosTokenId, eosTokenId)
+    init {
+        val mandatorySpecialTokens = listOf("<sos>", "<eos>")
+        for (token in mandatorySpecialTokens) {
+            val tokenId = tokenToId[token] ?: error("$token not in tokenToId")
+            require(tokenId in specialTokenIds) { "$token token must be in special tokens" }
+        }
+    }
 
+    fun tokenize(str: String, addSpecialTokens: Boolean = true): IntArray {
+        val tokens = str.map { char ->
+            tokenToId[char.toString()]
+                ?: unkTokenId ?: error("Unknown character '$char' is met and no <unk> token is present")
+        }
+        return if (addSpecialTokens) {
+            intArrayOf(sosTokenId) + tokens + intArrayOf(eosTokenId)
+        } else {
+            tokens.toIntArray()
+        }
+    }
 
-   override fun tokenize(str: String): IntArray {
-       val tokens = mutableListOf<Int>()
-       str.forEach { tokens.add(tokenToId[it.toString()] ?: tokenToId["<unk>"]!!)}
-       val tokensWithSpecials = listOf(tokenToId["<sos>"]!!) + tokens + listOf(tokenToId["<eos>"]!!)
-       return tokensWithSpecials.toIntArray()
-   }
-
-   override fun detokenize(ids: IntArray): String {
-      return ids.filter{it < 33 }.map{ idToToken[it] }.joinToString(separator = "")
-   }
-
-    public val sosTokenId = tokenToId["<sos>"] ?: throw IllegalStateException(
-        "subwordTokenizer doesn't have a <sos> token")
-    public val eosTokenId = tokenToId["<eos>"] ?: throw IllegalStateException(
-        "subwordTokenizer doesn't have a <eos> token")
-}
-
-
-class KeyboardKeyTokenizer: TokenMapsContainer {
-   private val idToTokenArr = charArrayOf(
-      'а', 'б', 'в', 'г', 'д', 'е', 'ë', 'ж', 'з', 'и', 'й',
-      'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф',
-      'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я')
-
-   override val idToToken = idToTokenArr.indices.associateWith { idToTokenArr[it].toString() }
-
-   override val tokenToId: Map<String, Int> = idToToken.map { (k, v) -> v to k }.toMap()
+    fun detokenize(ids: IntArray, avoidSpecialTokens: Boolean = true): String {
+        return ids
+            .filterNot{avoidSpecialTokens && (it in specialTokenIds)}
+            .map{ idToToken[it] }
+            .joinToString(separator = "")
+    }
 }

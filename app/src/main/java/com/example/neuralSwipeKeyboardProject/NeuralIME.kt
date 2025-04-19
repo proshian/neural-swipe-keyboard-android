@@ -21,7 +21,9 @@ import io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction.TrajFea
 import io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction.NearestKeysGetter
 import io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction.FeatureExtractorAggregator
 import io.github.proshian.neuralswipetyping.swipeTypingDecoders.NeuralSwipeTypingDecoder
-import io.github.proshian.neuralswipetyping.tokenizers.RuSubwordTokenizer
+import io.github.proshian.neuralswipetyping.tokenizers.KeyboardTokenizer
+import io.github.proshian.neuralswipetyping.tokenizers.WordTokenizer
+import kotlinx.serialization.json.Json
 import org.pytorch.executorch.Module
 import java.io.IOException
 
@@ -46,7 +48,15 @@ class NeuralIME : InputMethodService() {
             val encoderDecoderModule = Module.load(modelPath)
                 ?: throw IllegalStateException("Model loading failed")
 
-            val subwordTokenizer = RuSubwordTokenizer()
+
+            val keyboardTokenizerJson = applicationContext.assets.open(
+                "tokenizers/keyboard/ru_default.json").use { it.reader().readText() }
+            val keyboardTokenizer = Json.decodeFromString<KeyboardTokenizer>(keyboardTokenizerJson)
+
+            val wordTokenizerJson = applicationContext.assets.open(
+                "tokenizers/word/ru.json").use { it.reader().readText() }
+            val wordTokenizer = Json.decodeFromString<WordTokenizer>(wordTokenizerJson)
+
 
 //            val vocab = loadVocabulary("voc.txt")
 //            val logitsProcessor = VocabularyLogitsProcessorMapBased(subwordTokenizer, vocab)
@@ -58,8 +68,8 @@ class NeuralIME : InputMethodService() {
 
             val decodingAlgorithm = BeamSearch(
                 encoderDecoderModule,
-                sosToken = subwordTokenizer.sosTokenId,
-                eosToken = subwordTokenizer.eosTokenId,
+                sosToken = wordTokenizer.sosTokenId,
+                eosToken = wordTokenizer.eosTokenId,
                 maxSteps = 35,
                 beamSize = 5,
                 logitsProcessor=logitsProcessor
@@ -68,7 +78,7 @@ class NeuralIME : InputMethodService() {
 
             val keyboardGridReader = KeyboardGridReader(this)
             val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets("${currentGridName}.json")
-            val nearestKeysGetter = NearestKeysGetter(keyboardGrid)
+            val nearestKeysGetter = NearestKeysGetter(keyboardGrid, keyboardTokenizer)
             val trajFeatsGetter = TrajFeatsGetter()
 
             val coordFeatsAndNearestKeyGetter = FeatureExtractorAggregator(
@@ -78,7 +88,7 @@ class NeuralIME : InputMethodService() {
             neuralSwipeTypingDecoder = NeuralSwipeTypingDecoder(
                 encoderDecoderModule,
                 decodingAlgorithm,
-                subwordTokenizer,
+                wordTokenizer,
                 coordFeatsAndNearestKeyGetter
             )
         } catch (e: IOException) {

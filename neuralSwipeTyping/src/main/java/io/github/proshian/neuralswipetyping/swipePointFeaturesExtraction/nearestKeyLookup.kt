@@ -1,7 +1,7 @@
 package io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction
 
 import io.github.proshian.neuralswipetyping.keyboardGrid.KeyboardKey
-import io.github.proshian.neuralswipetyping.tokenizers.KeyboardKeyTokenizer
+import io.github.proshian.neuralswipetyping.tokenizers.KeyboardTokenizer
 import io.github.proshian.neuralswipetyping.keyboardGrid.KeyboardGrid
 import org.pytorch.executorch.EValue
 import org.pytorch.executorch.Tensor
@@ -22,9 +22,10 @@ fun getNearestKeyTokenWithoutMap(i: Int, j: Int, keys: List<KeyboardKey>): Int {
 }
 
 
-class NearestKeysGetter(grid: KeyboardGrid, allowedLabels: Set<String>? = null) : FeatureExtractor {
+class NearestKeysGetter(grid: KeyboardGrid,
+                        private val tokenizer: KeyboardTokenizer,
+                        allowedLabels: Set<String>? = null) : FeatureExtractor {
     private val nkl: Array<IntArray>
-    private val tokenizer = KeyboardKeyTokenizer()
     val resolvedAllowedLabels = allowedLabels ?: tokenizer.tokenToId.keys
     private val allowedKeys: List<KeyboardKey.CharacterKey> =
         grid.keys.filterIsInstance<KeyboardKey.CharacterKey>()

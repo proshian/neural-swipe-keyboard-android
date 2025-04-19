@@ -1,7 +1,7 @@
 package io.github.proshian.neuralswipetyping.logitsProcessors
 
 import android.util.Log
-import io.github.proshian.neuralswipetyping.tokenizers.RuSubwordTokenizer
+import io.github.proshian.neuralswipetyping.tokenizers.WordTokenizer
 import com.example.trie.traverseTrie
 import com.example.trie.MutableNode
 import com.example.trie.Node
@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicReference
  * With the Yandex Cup vocabulary, consumes approximately 210 MB.
  */
 class VocabularyLogitsProcessorTrieBased(
-    private val tokenizer: RuSubwordTokenizer,
+    private val tokenizer: WordTokenizer,
     private val vocab: List<String>,
 ) : LogitsProcessor() {
     private val root: AtomicReference<Node<Int>?> = AtomicReference(null)

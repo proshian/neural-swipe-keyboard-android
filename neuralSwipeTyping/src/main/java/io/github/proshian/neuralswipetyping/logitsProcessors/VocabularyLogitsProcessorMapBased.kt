@@ -1,7 +1,7 @@
 package io.github.proshian.neuralswipetyping.logitsProcessors
 
 import android.util.Log
-import io.github.proshian.neuralswipetyping.tokenizers.RuSubwordTokenizer
+import io.github.proshian.neuralswipetyping.tokenizers.WordTokenizer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReference
  * With the Yandex Cup vocabulary, consumes approximately 290 MB.
  */
 class VocabularyLogitsProcessorMapBased(
-    private val tokenizer: RuSubwordTokenizer,
+    private val tokenizer: WordTokenizer,
     private val vocab: List<String>,
 ) : LogitsProcessor() {
 
