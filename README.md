@@ -45,13 +45,12 @@ The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDe
 neuralSwipeTyping library related:
 - [ ] **Add support for more languages, including English**
 - [ ] Instructions on generating synthetic datasets, training, and integrating models for new languages and keyboard layouts
-- [ ] Reading tokenizers from JSON via serializable  
 - [ ] Publishing as an .arr library
 
 Demo app related:
 - [ ] Keyboard design
 - [ ] Swipe trail visualization
-- [ ] Support for multiple keyboard layouts
+- [ ] Multiple keyboard layouts
 
 Other:
 - [ ] Removing duplicate tokenizers from the trie-builder

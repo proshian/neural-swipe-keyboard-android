@@ -24,5 +24,3 @@ class KeyboardGridReader(private val context: Context) {
         }
     }
 }
-
-
