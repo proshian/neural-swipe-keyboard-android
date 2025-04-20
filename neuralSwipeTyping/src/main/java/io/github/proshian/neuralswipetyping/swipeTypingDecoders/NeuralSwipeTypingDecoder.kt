@@ -2,9 +2,10 @@ package io.github.proshian.neuralswipetyping.swipeTypingDecoders
 
 import io.github.proshian.neuralswipetyping.decodingAlgorithms.DecodingAlgorithm
 import io.github.proshian.neuralswipetyping.decodingAlgorithms.ScoredTokenSequenceCandidate
+import io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction.FeatureExtractor
 import org.pytorch.executorch.Module
 import io.github.proshian.neuralswipetyping.tokenizers.WordTokenizer
-import org.pytorch.executorch.EValue
+
 
 /**
  * Uses a neural network model to decode swipe gestures into a word candidates list sorted by probability.
@@ -50,7 +51,7 @@ class NeuralSwipeTypingDecoder(
     private val encoderModule: Module,
     private val decodingAlgorithm: DecodingAlgorithm,
     private val subwordTokenizer: WordTokenizer,
-    private val xytTransform: (IntArray, IntArray, IntArray) -> Array<EValue>
+    private val xytTransform: FeatureExtractor
 ) : SwipeTypingDecoder() {
 
     fun getScoredCandidates(
@@ -58,7 +59,7 @@ class NeuralSwipeTypingDecoder(
         y: IntArray,
         t: IntArray
     ): List<ScoredTokenSequenceCandidate> {
-        val encoderInputArgs = xytTransform(x, y, t)
+        val encoderInputArgs = xytTransform.extractFeatures(x, y, t)
         val encodedEValue = encoderModule.execute("encode", *encoderInputArgs)[0]
         return decodingAlgorithm.decode(encodedEValue)
     }

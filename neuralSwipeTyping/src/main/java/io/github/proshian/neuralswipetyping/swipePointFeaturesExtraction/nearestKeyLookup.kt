@@ -67,7 +67,7 @@ class NearestKeysGetter(grid: KeyboardGrid,
         return labeledKeyboardArr
     }
 
-    override fun invoke(x: IntArray, y: IntArray, t: IntArray): Array<EValue> {
+    override fun extractFeatures(x: IntArray, y: IntArray, t: IntArray): Array<EValue> {
         val nearestKeys = IntArray(x.size)
         for (i in nearestKeys.indices) {
             val xi = x[i]

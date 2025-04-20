@@ -83,7 +83,7 @@ class TrajFeatsGetter(
         return Tensor.fromBlob(data, tensor.shape())
     }
 
-    override fun invoke(x: IntArray, y: IntArray, t: IntArray): Array<EValue> {
+    override fun extractFeatures(x: IntArray, y: IntArray, t: IntArray): Array<EValue> {
         val tensor = getFeats(x, y, t)
         return arrayOf(EValue.from(tensor))
     }
