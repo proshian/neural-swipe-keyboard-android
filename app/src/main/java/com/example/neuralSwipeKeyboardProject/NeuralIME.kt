@@ -12,11 +12,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.proshian.neuralswipetyping.keyboardGrid.KeyboardGridReader
-import com.example.neuralSwipeKeyboardProject.assertUtils.AssetUtils
+import com.example.neuralSwipeKeyboardProject.AssetUtils.AssetUtils
 import io.github.proshian.neuralswipetyping.decodingAlgorithms.BeamSearch
 import io.github.proshian.neuralswipetyping.logitsProcessors.VocabularyLogitsProcessorPrebuiltTrieBased
-import io.github.proshian.neuralswipetyping.logitsProcessors.VocabularyLogitsProcessorTrieBased
-import io.github.proshian.neuralswipetyping.logitsProcessors.VocabularyLogitsProcessorMapBased
 import io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction.TrajFeatsGetter
 import io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction.NearestKeysGetter
 import io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction.FeatureExtractorAggregator
@@ -34,7 +32,7 @@ class NeuralIME : InputMethodService() {
     private var candidatesRecyclerView: RecyclerView? = null
     private lateinit var candidatesAdapter: CandidateAdapter
     private lateinit var neuralSwipeTypingDecoder: NeuralSwipeTypingDecoder
-    private var currentGridName = "default"
+    private var currentGridName = "ru_default"
 
     override fun onCreate() {
         super.onCreate()
@@ -43,14 +41,14 @@ class NeuralIME : InputMethodService() {
 
     private fun initializeDecoder() {
         try {
-            val modelFileName = "xnnpack_my_nearest_feats.pte"
+            val modelFileName = "models/ru_default__xnnpack_my_nearest_feats.pte"
             val modelPath = AssetUtils.assetFilePath(applicationContext, modelFileName)
             val encoderDecoderModule = Module.load(modelPath)
                 ?: throw IllegalStateException("Model loading failed")
 
 
             val keyboardTokenizerJson = applicationContext.assets.open(
-                "tokenizers/keyboard/ru_default.json").use { it.reader().readText() }
+                "tokenizers/keyboard/ru.json").use { it.reader().readText() }
             val keyboardTokenizer = Json.decodeFromString<KeyboardTokenizer>(keyboardTokenizerJson)
 
             val wordTokenizerJson = applicationContext.assets.open(
@@ -63,7 +61,7 @@ class NeuralIME : InputMethodService() {
 //            val logitsProcessor = VocabularyLogitsProcessorTrieBased(subwordTokenizer, vocab)
 
             val logitsProcessor = VocabularyLogitsProcessorPrebuiltTrieBased(
-                applicationContext, "trie.ser")
+                applicationContext, "logitProcessorResources/trie.ser")
 
 
             val decodingAlgorithm = BeamSearch(
@@ -77,7 +75,8 @@ class NeuralIME : InputMethodService() {
 
 
             val keyboardGridReader = KeyboardGridReader(this)
-            val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets("${currentGridName}.json")
+            val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets(
+                "keyboardLayouts/${currentGridName}.json")
             val nearestKeysGetter = NearestKeysGetter(keyboardGrid, keyboardTokenizer)
             val trajFeatsGetter = TrajFeatsGetter()
 
@@ -160,7 +159,7 @@ class NeuralIME : InputMethodService() {
     override fun onStartInputView(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
         val keyboardGridReader = KeyboardGridReader(this)
-        val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets("${currentGridName}.json")
+        val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets("keyboardLayouts/${currentGridName}.json")
         keyboardView?.setKeyboard(keyboardGrid)
     }
 }
