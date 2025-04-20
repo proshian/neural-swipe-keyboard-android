@@ -78,7 +78,7 @@ class NeuralIME : InputMethodService() {
             val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets(
                 "keyboardLayouts/${currentGridName}.json")
             val nearestKeysGetter = NearestKeysGetter(keyboardGrid, keyboardTokenizer)
-            val trajFeatsGetter = TrajFeatsGetter()
+            val trajFeatsGetter = TrajFeatsGetter(width = 1080, height = 667)
 
             val coordFeatsAndNearestKeyGetter = FeatureExtractorAggregator(
                 listOf(trajFeatsGetter, nearestKeysGetter)

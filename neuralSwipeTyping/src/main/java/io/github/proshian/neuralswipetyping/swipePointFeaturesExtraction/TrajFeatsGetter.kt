@@ -12,22 +12,16 @@ fun getDxDt(x: FloatArray, t: FloatArray): FloatArray {
     return dxDt
 }
 
-//val gridNameToWh = mapOf("default" to Pair(1080, 667))
 
 class TrajFeatsGetter(
     private val includeTime: Boolean = false,
     private val includeVelocities: Boolean = true,
     private val includeAccelerations: Boolean = true,
-    private val gridNameToWh: Map<String, Pair<Int, Int>> = mapOf("default" to Pair(1080, 667)),
+    private val width: Int,
+    private val height: Int,
     ) : FeatureExtractor {
 
-    init {
-        if (includeAccelerations && !includeVelocities) {
-            throw IllegalArgumentException("Accelerations require velocities to be included.")
-        }
-    }
-
-    fun getFeats(x: IntArray, y: IntArray, t: IntArray, gridName: String): Tensor {
+    fun getFeats(x: IntArray, y: IntArray, t: IntArray): Tensor {
         assert( (x.size == y.size) and (x.size == t.size) )
 
         val xFloat = x.map{ it.toFloat() }.toFloatArray()
@@ -55,9 +49,8 @@ class TrajFeatsGetter(
         }
 
         val trajFeats = stackFloatArraysToTensor(trajectoryFeatsList)
-        Log.i("myTag", "before normalization: ${trajFeats.dataAsFloatArray.joinToString(" ")}")
+        Log.i("myTag", "trajFeats before normalization: ${trajFeats.dataAsFloatArray.joinToString(" ")}")
 
-        val (width, height) = gridNameToWh[gridName] ?: throw IllegalArgumentException("Invalid grid name: $gridName")
         val trajFeatsNormed = normalizeTrajFeats(trajFeats, width.toFloat(), height.toFloat())
 
         return trajFeatsNormed
@@ -91,8 +84,7 @@ class TrajFeatsGetter(
     }
 
     override fun invoke(x: IntArray, y: IntArray, t: IntArray): Array<EValue> {
-        val gridName = "default" // Use the default grid name for now
-        val tensor = getFeats(x, y, t, gridName)
+        val tensor = getFeats(x, y, t)
         return arrayOf(EValue.from(tensor))
     }
 }
