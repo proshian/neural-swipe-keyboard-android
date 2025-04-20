@@ -31,12 +31,14 @@ The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDe
     
     Option 1. Generate artifacts yourself:
     * xnnpack_my_nearest_feats.pte (neural network)
-        * Use [executorch_export.ipynb in neural-glide-typing project](https://github.com/proshian/neural-swipe-typing/blob/executorch-investigation/src/executorch_export.ipynb) to create xnnpack_my_nearest_feats.pte.
-        * Move `xnnpack_my_nearest_feats.pte` to `app/src/main/assets/xnnpack_my_nearest_feats.pte`
+        * Use [executorch_export.ipynb in neural-glide-typing project](https://github.com/proshian/neural-swipe-typing/blob/executorch-investigation/src/executorch_export.ipynb) to create ru_default__xnnpack_my_nearest_feats.pte.
+        * Move `ru_default__xnnpack_my_nearest_feats.pte` to `app/src/main/assets/models/ru_default__xnnpack_my_nearest_feats.pte`
     * trie.ser
         * Execute trie-builder/src/main/java/com/example/trie_builder/Main.kt
 
-    Option 2. Download xnnpack_my_nearest_feats.pte and trie.ser from the assets of the [latest release](https://github.com/proshian/neural-swipe-keyboard-android/releases/) and place them in app/src/main/assets
+    Option 2. Download ru_default__xnnpack_my_nearest_feats.pte and trie.ser from the assets of the [latest release](https://github.com/proshian/neural-swipe-keyboard-android/releases/)
+              and place them in app/src/main/assets/models and app/src/main/assets/logitProcessorResources  
+              respectively.
 
 2. Build this android app with Android Studio
 
