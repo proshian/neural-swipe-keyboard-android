@@ -29,10 +29,10 @@ class NeuralIME : InputMethodService() {
 
     override fun onCreate() {
         super.onCreate()
-        initializeSwipeDecoder()
+        setUpSwipeTypingDecoder()
     }
 
-    private fun initializeSwipeDecoder() {
+    private fun setUpSwipeTypingDecoder() {
         fun loadConfig(configPath: String): NeuralSwipeTypingDecoderConfig {
             val json = assets.open(configPath).use { it.reader().readText() }
             return Json.decodeFromString(json)
