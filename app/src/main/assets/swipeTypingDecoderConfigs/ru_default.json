@@ -1,0 +1,29 @@
+{
+  "modelPath": "models/ru_default__xnnpack_my_nearest_feats.pte",
+  "wordTokenizerPath": "tokenizers/word/ru.json",
+  "decodingAlgorithmConfig": {
+    "type": "beam_search",
+    "params": {
+      "max_steps": 35,
+      "beam_size": 5
+    }
+  },
+  "featureExtractorConfig": {
+    "type": "traj+nearest_keys",
+    "params": {
+      "include_time": false,
+      "include_velocities": true,
+      "include_acceleration": true,
+      "width": 1080,
+      "height": 667,
+      "keyboard_grid_path": "keyboardLayouts/ru_default.json",
+      "keyboard_tokenizer_path": "tokenizers/keyboard/ru.json"
+    }
+  },
+  "logitsProcessorConfig": {
+    "type": "prebuilt_trie",
+    "params": {
+      "trie_path": "logitProcessorResources/trie.ser"
+    }
+  }
+}

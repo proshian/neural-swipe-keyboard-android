@@ -12,18 +12,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.proshian.neuralswipetyping.keyboardGrid.KeyboardGridReader
-import com.example.neuralSwipeKeyboardProject.AssetUtils.AssetUtils
-import io.github.proshian.neuralswipetyping.decodingAlgorithms.BeamSearch
-import io.github.proshian.neuralswipetyping.logitsProcessors.VocabularyLogitsProcessorPrebuiltTrieBased
-import io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction.TrajFeatsGetter
-import io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction.NearestKeysGetter
-import io.github.proshian.neuralswipetyping.swipePointFeaturesExtraction.FeatureExtractorAggregator
 import io.github.proshian.neuralswipetyping.swipeTypingDecoders.NeuralSwipeTypingDecoder
-import io.github.proshian.neuralswipetyping.tokenizers.KeyboardTokenizer
-import io.github.proshian.neuralswipetyping.tokenizers.WordTokenizer
+import io.github.proshian.neuralswipetyping.swipeTypingDecoders.NeuralSwipeTypingDecoderConfig
+import io.github.proshian.neuralswipetyping.swipeTypingDecoders.StandardNeuralSwipeTypingDecoderFactory
 import kotlinx.serialization.json.Json
-import org.pytorch.executorch.Module
-import java.io.IOException
 
 
 
@@ -31,74 +23,26 @@ class NeuralIME : InputMethodService() {
     private var keyboardView: KeyboardView? = null
     private var candidatesRecyclerView: RecyclerView? = null
     private lateinit var candidatesAdapter: CandidateAdapter
+    private val swipeDecoderFactory = StandardNeuralSwipeTypingDecoderFactory()
     private lateinit var neuralSwipeTypingDecoder: NeuralSwipeTypingDecoder
     private var currentGridName = "ru_default"
 
     override fun onCreate() {
         super.onCreate()
-        initializeDecoder()
+        setUpSwipeTypingDecoder()
     }
 
-    private fun initializeDecoder() {
-        try {
-            val modelFileName = "models/ru_default__xnnpack_my_nearest_feats.pte"
-            val modelPath = AssetUtils.assetFilePath(applicationContext, modelFileName)
-            val encoderDecoderModule = Module.load(modelPath)
-                ?: throw IllegalStateException("Model loading failed")
-
-
-            val keyboardTokenizerJson = applicationContext.assets.open(
-                "tokenizers/keyboard/ru.json").use { it.reader().readText() }
-            val keyboardTokenizer = Json.decodeFromString<KeyboardTokenizer>(keyboardTokenizerJson)
-
-            val wordTokenizerJson = applicationContext.assets.open(
-                "tokenizers/word/ru.json").use { it.reader().readText() }
-            val wordTokenizer = Json.decodeFromString<WordTokenizer>(wordTokenizerJson)
-
-
-//            val vocab = loadVocabulary("voc.txt")
-//            val logitsProcessor = VocabularyLogitsProcessorMapBased(subwordTokenizer, vocab)
-//            val logitsProcessor = VocabularyLogitsProcessorTrieBased(subwordTokenizer, vocab)
-
-            val logitsProcessor = VocabularyLogitsProcessorPrebuiltTrieBased(
-                applicationContext, "logitProcessorResources/trie.ser")
-
-
-            val decodingAlgorithm = BeamSearch(
-                encoderDecoderModule,
-                sosToken = wordTokenizer.sosTokenId,
-                eosToken = wordTokenizer.eosTokenId,
-                maxSteps = 35,
-                beamSize = 5,
-                logitsProcessor=logitsProcessor
-            )
-
-
-            val keyboardGridReader = KeyboardGridReader(this)
-            val keyboardGrid = keyboardGridReader.readKeyboardGridFromAssets(
-                "keyboardLayouts/${currentGridName}.json")
-            val nearestKeysGetter = NearestKeysGetter(keyboardGrid, keyboardTokenizer)
-            val trajFeatsGetter = TrajFeatsGetter(width = 1080, height = 667)
-
-            val coordFeatsAndNearestKeyGetter = FeatureExtractorAggregator(
-                listOf(trajFeatsGetter, nearestKeysGetter)
-            )
-
-            neuralSwipeTypingDecoder = NeuralSwipeTypingDecoder(
-                encoderDecoderModule,
-                decodingAlgorithm,
-                wordTokenizer,
-                coordFeatsAndNearestKeyGetter
-            )
-        } catch (e: IOException) {
-            Log.e("NeuralIME", "Decoder initialization failed", e)
+    private fun setUpSwipeTypingDecoder() {
+        fun loadConfig(configPath: String): NeuralSwipeTypingDecoderConfig {
+            val json = assets.open(configPath).use { it.reader().readText() }
+            return Json.decodeFromString(json)
         }
-    }
 
-
-    private fun loadVocabulary(filename: String): List<String> {
-        return assets.open(filename).bufferedReader().useLines {
-            it.filterNot { line -> line.isBlank() }.toList()
+        try {
+            val config = loadConfig("swipeTypingDecoderConfigs/${currentGridName}.json")
+            neuralSwipeTypingDecoder = swipeDecoderFactory.create(applicationContext, config)
+        } catch (e: Exception) {
+            Log.e("NeuralIME", "Swipe decoder init failed", e)
         }
     }
 
