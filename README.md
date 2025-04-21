@@ -5,7 +5,7 @@ An Android library that enables keyboards (IME) to support neural network-powere
 The models are trained in a separate [neural-swipe-typing repository](https://github.com/proshian/neural-swipe-typing).
 
 > [!Note]  
-> The demo app supports only swipe typing and is not intended for daily use — you cannot type individual symbols or even press the Enter key.  
+> The demo app supports only swipe typing and is not intended for daily use — you cannot type individual symbols or even press the Enter key. 
 > It serves as a showcase of the library integration; all nuances unrelated to swipe typing are out of scope for this project.
 
 ## Demo  
@@ -15,15 +15,15 @@ https://github.com/user-attachments/assets/c8375b80-4ac3-4b2a-9423-933cd321a546
 A pre-built APK is available in the [Releases section](https://github.com/proshian/neural-swipe-keyboard-android/releases) of this repository.
 
 ## Why This Exists  
-Most keyboard apps from large tech companies log your swipe gestures to their servers.  
-While open-source keyboards protect your privacy, they often fall short in swipe-typing accuracy compared to proprietary offerings.  
+Most keyboard apps from large tech companies log your swipe gestures to their servers. 
+While open-source keyboards protect your privacy, they often fall short in swipe-typing accuracy compared to proprietary offerings. 
 This gap exists because major companies have used neural networks for swipe typing 
 ([1](https://research.google/blog/the-machine-intelligence-behind-gboard/), 
 [2](https://www.grammarly.com/blog/engineering/deep-learning-swipe-typing/), 
 [3](https://yandex.ru/company/news/02-06-23)) since 2015, 
 when [Google demonstrated that neural networks improve swipe typing decoding](https://ieeexplore.ieee.org/document/7178336). 
+Building such models requires ML expertise that may be unavailable to small teams. 
 
-Building such models requires ML expertise often unavailable to small teams.  
 This project aims to help mobile developers build privacy-focused keyboards.
 
 ## State of the Project  
@@ -31,9 +31,10 @@ This project aims to help mobile developers build privacy-focused keyboards.
 ### Library  
 The library is available as a package named `neuralSwipeTyping`.  
 
-Currently, only Russian is supported due to the lack of datasets for other languages.  
-It’s possible to generate synthetic data — the easiest method is described in  
-[this paper](https://www.tandfonline.com/doi/full/10.1080/07370024.2016.1215922).  
+Currently, only Russian is supported due to the lack of datasets for other languages. 
+It’s possible to generate synthetic data — the easiest method is described in 
+[this paper](https://www.tandfonline.com/doi/full/10.1080/07370024.2016.1215922).
+
 Expanding language support is a top development priority.
 
 ### App  
@@ -44,14 +45,14 @@ This is not an issue with the library itself — the current trie (~170 MB) in
 Some devices restrict apps to under 256 MB of RAM, making such a large vocabulary impractical.
 The vocabulary will be significantly reduced in future versions.
 
----
 
 ## Getting Started
 
 The core swipe decoding logic is implemented in 
 [NeuralSwipeTypingDecoder](./neuralSwipeTyping/src/main/java/io/github/proshian/neuralswipetyping/swipeTypingDecoders/NeuralSwipeTypingDecoder.kt), 
 the primary component to integrate into a keyboard. 
-See its documentation for details.  
+See its documentation for details.
+
 A convenient way to create a swipe decoder is using 
 [StandardNeuralSwipeTypingDecoderFactory](./neuralSwipeTyping/src/main/java/io/github/proshian/neuralswipetyping/swipeTypingDecoders/StandardNeuralSwipeTypingDecoderFactory.kt).
 
@@ -131,15 +132,17 @@ assets/
 ```
 
 
-## Quick Start to Build the Demo App
 
 ## Quick Start to build the demo app
+
 1. **Obtain assets**  
-   Option 1: Generate artifacts yourself:
-   - **`xnnpack_my_nearest_feats.pte` (neural network)**  
-     - Use [executorch_export.ipynb](https://github.com/proshian/neural-swipe-typing/blob/executorch-investigation/src/executorch_export.ipynb) 
-       in neural-glide-typing project to create `ru_default__xnnpack_my_nearest_feats.pte`  
-     - Move it to `app/src/main/assets/models/`
+    Option 1: Generate artifacts yourself:
+    - `xnnpack_my_nearest_feats.pte` (neural network)
+        - Use [executorch_export.ipynb](https://github.com/proshian/neural-swipe-typing/blob/executorch-investigation/src/executorch_export.ipynb) 
+          in neural-glide-typing project to create `ru_default__xnnpack_my_nearest_feats.pte`  
+        - Move it to `app/src/main/assets/models/`
+    - trie.ser (trie for logit processor)
+        - Run `trie-builder/src/main/java/com/example/trie_builder/Main.kt`
 
     Option 2. Download the files from the [latest release](https://github.com/proshian/neural-swipe-keyboard-android/releases/) 
     and place them in: 
