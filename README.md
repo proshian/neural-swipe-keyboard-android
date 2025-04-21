@@ -1,60 +1,59 @@
 # Neural Swipe Typing for Android Keyboards
 
-An android library to provide keyboards (IME)  with neural network-powered swipe typing and a demo app that uses the library.
+An Android library that enables keyboards (IME) to support neural network-powered swipe typing, along with a demo app that showcases its functionality.
 
 The models are trained in a separate [neural-swipe-typing repository](https://github.com/proshian/neural-swipe-typing).
 
-> [!Note]
-> The demo app supports only swipe typing and is not suitable for daily use — you cannot type 
-> individual symbols or even press the Enter key. It's a showcase of the library integration, 
-> and all nuances unrelated to swipe typing are out of scope for this project.
+> [!Note]  
+> The demo app supports only swipe typing and is not intended for daily use — you cannot type individual symbols or even press the Enter key.  
+> It serves as a showcase of the library integration; all nuances unrelated to swipe typing are out of scope for this project.
 
-## Demo
+## Demo  
 https://github.com/user-attachments/assets/c8375b80-4ac3-4b2a-9423-933cd321a546
 
-## Download Demo App
+## Download Demo App  
 A pre-built APK is available in the [Releases section](https://github.com/proshian/neural-swipe-keyboard-android/releases) of this repository.
 
-## Why This Exists
-Most keyboard apps from large tech companies log your swipe gestures to their servers. 
-While open-source keyboards protect your privacy, they often can't match the swipe-typing
-accuracy of proprietary offerings. This gap exists because proprietary keyboards have been using 
-neural networks for this task 
+## Why This Exists  
+Most keyboard apps from large tech companies log your swipe gestures to their servers.  
+While open-source keyboards protect your privacy, they often fall short in swipe-typing accuracy compared to proprietary offerings.  
+This gap exists because major companies have used neural networks for swipe typing 
 ([1](https://research.google/blog/the-machine-intelligence-behind-gboard/), 
 [2](https://www.grammarly.com/blog/engineering/deep-learning-swipe-typing/), 
 [3](https://yandex.ru/company/news/02-06-23)) since 2015, 
 when [Google demonstrated that neural networks improve swipe typing decoding](https://ieeexplore.ieee.org/document/7178336). 
-Developing these models requires ML expertise that may be lacking in small teams. 
+
+Building such models requires ML expertise often unavailable to small teams.  
 This project aims to help mobile developers build privacy-focused keyboards.
 
 ## State of the Project  
 
-### Library
-The library is available as a package named neuralSwipeTyping. 
+### Library  
+The library is available as a package named `neuralSwipeTyping`.  
 
-Only Russian is supported at the moment due to the lack of datasets for other languages.
-It is possible to generate synthetic data
-(the easiest way is to follow [this paper](https://www.tandfonline.com/doi/full/10.1080/07370024.2016.1215922)).
-Expanding language support is the top development priority.
+Currently, only Russian is supported due to the lack of datasets for other languages.  
+It’s possible to generate synthetic data — the easiest method is described in  
+[this paper](https://www.tandfonline.com/doi/full/10.1080/07370024.2016.1215922).  
+Expanding language support is a top development priority.
 
-### App
-A functional swipe-typing demo app is currently available.
+### App  
+A functional swipe-typing demo app is available.
 
-The app is stable on tested devices. 
-However, crashes may occur due to RAM limitations on some devices. 
-The app currently uses a large trie (~170 MB) (the vocabulary contains over 0.5 million Russian words). 
-Some devices restrict apps from consuming more than 256 MB of RAM. 
-The vocabulary probably needs to be significantly reduced.  
+The app is stable on tested devices, though it may crash on some due to RAM limitations.
+This is not an issue with the library itself — the current trie (~170 MB) includes over 0.5 million Russian words, which is excessive.
+Some devices restrict apps to under 256 MB of RAM, making such a large vocabulary impractical.
+The vocabulary will be significantly reduced in future versions.
 
-
+---
 
 ## Getting Started
 
-The core swipe decoding functionality is implemented in the [NeuralSwipeTypingDecoder](./neuralSwipeTyping/src/main/java/io/github/proshian/neuralswipetyping/swipeTypingDecoders/NeuralSwipeTypingDecoder.kt) class. 
-This is the essential component you would integrate into a keyboard implementation. See its documentation for details.
-A convinient way to create a neural swipe typing decoder is to use the [StandardNeuralSwipeTypingDecoderFactory](./neuralSwipeTyping/src/main/java/io/github/proshian/neuralswipetyping/swipeTypingDecoders/StandardNeuralSwipeTypingDecoderFactory.kt) class.
-
-
+The core swipe decoding logic is implemented in 
+[NeuralSwipeTypingDecoder](./neuralSwipeTyping/src/main/java/io/github/proshian/neuralswipetyping/swipeTypingDecoders/NeuralSwipeTypingDecoder.kt), 
+the primary component to integrate into a keyboard. 
+See its documentation for details.  
+A convenient way to create a swipe decoder is using 
+[StandardNeuralSwipeTypingDecoderFactory](./neuralSwipeTyping/src/main/java/io/github/proshian/neuralswipetyping/swipeTypingDecoders/StandardNeuralSwipeTypingDecoderFactory.kt).
 
 ### 1. Add Dependency
 
@@ -64,7 +63,7 @@ implementation(project(":neuralSwipeTyping"))
 
 ### 2. Configure Decoder
 
-Create a JSON configuration file in `assets/swipeTypingDecoderConfigs/`. Example:
+Create a JSON config file in `assets/swipeTypingDecoderConfigs/`. Example:
 
 ```json
 {
@@ -116,11 +115,9 @@ val candidates = decoder.decodeSwipe(xCoords, yCoords, timestamps)
 ```
 
 
-
-
 ## Asset Requirements
 
-To use the library, you'll need these assets in your `assets/` folder:
+To use the library, include the following in your `assets/` directory:
 
 ```
 assets/
@@ -134,28 +131,28 @@ assets/
 ```
 
 
-
+## Quick Start to Build the Demo App
 
 ## Quick Start to build the demo app
-1. Obtain assets
-    Option 1. Generate artifacts yourself:
-    * xnnpack_my_nearest_feats.pte (neural network)
-        * Use [executorch_export.ipynb in neural-glide-typing project](https://github.com/proshian/neural-swipe-typing/blob/executorch-investigation/src/executorch_export.ipynb) to create ru_default__xnnpack_my_nearest_feats.pte.
-        * Move `ru_default__xnnpack_my_nearest_feats.pte` to `app/src/main/assets/models/ru_default__xnnpack_my_nearest_feats.pte`
-    * trie.ser
-        * Execute trie-builder/src/main/java/com/example/trie_builder/Main.kt
+1. **Obtain assets**  
+   Option 1: Generate artifacts yourself:
+   - **`xnnpack_my_nearest_feats.pte` (neural network)**  
+     - Use [executorch_export.ipynb](https://github.com/proshian/neural-swipe-typing/blob/executorch-investigation/src/executorch_export.ipynb) 
+       in neural-glide-typing project to create `ru_default__xnnpack_my_nearest_feats.pte`  
+     - Move it to `app/src/main/assets/models/`
 
-    Option 2. Download ru_default__xnnpack_my_nearest_feats.pte and trie.ser from the assets of the [latest release](https://github.com/proshian/neural-swipe-keyboard-android/releases/)
-              and place them in app/src/main/assets/models and app/src/main/assets/logitProcessorResources  
-              respectively.
+    Option 2. Download the files from the [latest release](https://github.com/proshian/neural-swipe-keyboard-android/releases/) 
+    and place them in: 
+    - `app/src/main/assets/models/` (for `.pte`)  
+    - `app/src/main/assets/logitProcessorResources/` (for `trie.ser`)
 
-2. Build this android app with Android Studio
+2. **Build the Android app** using Android Studio
 
 
 
 ## Upcoming Improvements  
-- [ ] **Add support for English**
-- [ ] Create a pipeline for creating a synthetic dataset and training neural networks for any new languages and keyboard layouts
+- [ ] **Add support for English**  
+- [ ] Create a pipeline for generating synthetic datasets and training neural networks for any language and layout  
 
 
 
