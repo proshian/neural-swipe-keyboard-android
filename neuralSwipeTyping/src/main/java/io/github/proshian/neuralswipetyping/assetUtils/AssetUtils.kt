@@ -1,4 +1,4 @@
-package com.example.neuralSwipeKeyboardProject.AssetUtils
+package io.github.proshian.neuralswipetyping.assetUtils
 
 import android.content.Context
 import java.io.File
