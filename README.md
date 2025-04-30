@@ -28,14 +28,47 @@ This project aims to help mobile developers build privacy-focused keyboards.
 
 ## State of the Project  
 
-### Library  
-The library is available as a package named `neuralSwipeTyping`.  
+### Language support
 
-Currently, only Russian is supported due to the lack of datasets for other languages. 
-It’s possible to generate synthetic data — the easiest method is described in 
-[this paper](https://www.tandfonline.com/doi/full/10.1080/07370024.2016.1215922).
+Currently, this project supports only Russian due to limited training data availability for other languages.
+
+An English dataset was released by FUTO recently, and English model support will be added soon.
+
+You can generate synthetic training data for any language - the simplest approach is described in [this paper](https://www.tandfonline.com/doi/full/10.1080/07370024.2016.1215922). 
+Note that synthetically-generated data may produce less robust models than real-world data
 
 Expanding language support is a top development priority.
+
+
+### Library
+
+The library is available as an `.aar` file. 
+How to obtain it:
+
+#### Option 1: Download Pre-built Library
+You can download the compiled `.aar` file directly from the 
+[Releases section](https://github.com/proshian/neural-swipe-keyboard-android/releases).
+
+
+#### Option 2: Build From Source
+To build the library, run the following command in your terminal:
+
+```sh
+./gradlew neuralSwipeTyping:assembleRelease
+```
+
+**Note for JDK 21:**  
+If your default JDK is not version 21 you may need to specify the JDK 21 path. For example:
+
+*Example for Linux:*
+```sh
+./gradlew -Dorg.gradle.java.home=/usr/lib/jvm/java-21-openjdk-amd64 neuralSwipeTyping:assembleRelease
+```
+
+#### Output Location
+After successful compilation, the library will be generated at:  
+`neuralSwipeTyping/build/outputs/aar/neuralSwipeTyping-release.aar`
+
 
 ### App  
 A functional swipe-typing demo app is available.

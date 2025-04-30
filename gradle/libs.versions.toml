@@ -1,6 +1,5 @@
 [versions]
 agp = "8.7.2"
-executorchAndroidVersion = "0.5.1"
 kotlin = "2.0.0"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -16,12 +15,15 @@ recyclerviewVersion = "1.3.2"
 jetbrainsKotlinJvm = "2.0.0"
 appcompat = "1.7.0"
 material = "1.12.0"
-executorchAndroid = "0.6.0-rc4"
+executorchAndroid = "0.6.0"
+
+
+
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-recyclerview-v132 = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerviewVersion" }
-executorch-android-v051 = { module = "org.pytorch:executorch-android", version.ref = "executorchAndroidVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -41,6 +43,9 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 executorch-android = { group = "org.pytorch", name = "executorch-android", version.ref = "executorchAndroid" }
+
+
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

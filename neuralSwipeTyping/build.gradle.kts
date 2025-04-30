@@ -34,9 +34,9 @@ android {
 }
 
 dependencies {
-    implementation(libs.executorch.android.v051)
     implementation(libs.kotlinx.serialization.json)
     implementation(project(":trie"))
+    implementation(libs.executorch.android)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

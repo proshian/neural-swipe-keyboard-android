@@ -45,11 +45,11 @@ android {
 }
 
     dependencies {
-        implementation(libs.executorch.android.v051)
-        implementation(libs.kotlinx.serialization.json)
-        implementation(libs.kotlinx.collections.immutable)
+        implementation(files("libs/neuralSwipeTypingv010-beta2.aar"))
+        implementation(libs.executorch.android)
         implementation(project(":trie"))
-        implementation(project(":neuralSwipeTyping"))
+        implementation(libs.kotlinx.serialization.json)
+
         implementation(libs.androidx.core.ktx)
         implementation(libs.androidx.lifecycle.runtime.ktx)
         implementation(libs.androidx.activity.compose)
