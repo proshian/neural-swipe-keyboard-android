@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     kotlin("plugin.serialization") version "2.1.0"
+    id("maven-publish")
 }
 
 android {
@@ -30,6 +31,54 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+
+afterEvaluate {
+    publishing {
+        publications {
+            register<MavenPublication>("release") {
+                from(components["release"])
+
+                groupId = "io.github.proshian"
+                artifactId = "neuralswipetyping"
+                version = "0.1.0-alpha-3"
+
+
+                pom {
+                    name.set("Neural Swipe Typing")
+                    description.set("Android library for swipe typing decoding")
+                    url.set("https://github.com/proshian/neural-swipe-keyboard-android")
+                    licenses {
+                        license {
+                            name.set("MIT License")
+                            url.set("https://opensource.org/licenses/MIT")
+                        }
+                    }
+                }
+
+
+            }
+        }
+
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/proshian/neural-swipe-keyboard-android")
+                credentials {
+                    username = System.getenv("GPR_USER")
+                    password = System.getenv("GPR_API_KEY")
+                }
+            }
+        }
     }
 }
 
